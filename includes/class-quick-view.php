@@ -86,25 +86,42 @@ if ( ! class_exists( 'WPQV_Quick_View' ) ) {
 
 		/**
 		 * Output the quick view modal wrapper in the footer.
+		 *
+		 * Uses the native <dialog> element with showModal() for built-in focus
+		 * trapping, Esc handling, ::backdrop, and correct aria-modal semantics.
+		 *
+		 * aria-labelledby points to #wpqv-product-title which is the <h2>
+		 * rendered inside the product template after a product loads. The dialog
+		 * accessible name therefore matches the product being viewed.
 		 */
 		public function quick_view_wrapper() {
 			wp_enqueue_script( 'wc-add-to-cart-variation' );
 			?>
-			<div id="wc-product-quick-view">
-				<div class="wc-quick-view-modal">
-					<div class="modal-container">
-						<div class="modal-content">
-							<div class="modal-loading">
-								<div class="loading-wrapper">
-									<span class="wpqv-spinner"></span>
+			<dialog id="wpqv-dialog" aria-labelledby="wpqv-product-title">
+
+				<?php // Polite live region: announces loading state, product name, and add-to-cart feedback. ?>
+				<div id="wpqv-live"
+					class="screen-reader-text"
+					aria-live="polite"
+					aria-atomic="true"></div>
+
+				<div class="wpqv__modal">
+					<div class="wpqv__container">
+						<div class="wpqv__modal-content">
+
+							<div class="wpqv__loading" aria-hidden="true">
+								<div class="wpqv__loading-inner">
+									<span class="wpqv__spinner wpqv__spinner--modal"></span>
 								</div>
 							</div>
-							<div class="wc-quick-view-content"></div>
+
+							<div class="wpqv__content"></div>
+
 						</div>
 					</div>
-					<div class="modal-shadow"></div>
 				</div>
-			</div>
+
+			</dialog>
 			<?php
 		}
 

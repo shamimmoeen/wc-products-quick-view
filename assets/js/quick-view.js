@@ -5,11 +5,18 @@ jQuery( document ).ready( function( $ ) {
 		return;
 	}
 
-	var wrapper             = $( '#wc-product-quick-view' ),
-		container           = wrapper.find( '.wc-quick-view-content' ),
-		modalLoadingWrapper = wrapper.find( '.modal-loading' ),
-		loadingSpinner      = '.wpqv__spinner--inline',
-		currentRequest      = null;
+	var dialog      = document.getElementById( 'wpqv-dialog' ),
+		$dialog     = $( dialog ),
+		container   = $dialog.find( '.wpqv__content' ),
+		$loading    = $dialog.find( '.wpqv__loading' ),
+		$live       = $( '#wpqv-live' ),
+		loadingSpinner = '.wpqv__spinner--inline',
+		currentRequest = null,
+		lastTrigger    = null;
+
+	// -------------------------------------------------------------------------
+	// Gallery initialisation
+	// -------------------------------------------------------------------------
 
 	function initQuickViewGallery( $context ) {
 		var $galleries = $context.find( '.woocommerce-product-gallery' );
@@ -24,11 +31,19 @@ jQuery( document ).ready( function( $ ) {
 			$gallery.wc_product_gallery( wc_single_product_params || {} );
 			$gallery.trigger( 'wc-product-gallery-after-init', [ $gallery, wc_single_product_params || {} ] );
 		} );
+
+		// Disable WooCommerce's PhotoSwipe click handler on gallery image links.
+		// The quick view modal must not open a nested lightbox on top of itself.
+		$context.find( '.woocommerce-product-gallery__image > a' ).off( 'click' );
 	}
+
+	// -------------------------------------------------------------------------
+	// Navigation helpers
+	// -------------------------------------------------------------------------
 
 	/**
 	 * Returns the prev/next product IDs relative to $button's position
-	 * among all quick view buttons currently in the DOM.
+	 * among all quick view trigger buttons currently in the DOM.
 	 */
 	function getAdjacentIds( $button ) {
 		var $allButtons = $( '.wpqv__trigger' );
@@ -45,8 +60,8 @@ jQuery( document ).ready( function( $ ) {
 	}
 
 	/**
-	 * Finds the quick view button on the page for a given product ID.
-	 * Used during nav to look up that product's adjacent buttons.
+	 * Finds the quick view trigger button for a given product ID.
+	 * Used during in-modal navigation to look up adjacent IDs.
 	 */
 	function findButton( productId ) {
 		return $( '.wpqv__trigger' ).filter( function() {
@@ -54,10 +69,51 @@ jQuery( document ).ready( function( $ ) {
 		} ).first();
 	}
 
+	// -------------------------------------------------------------------------
+	// Modal open / close
+	// -------------------------------------------------------------------------
+
+	function openModal() {
+		dialog.showModal();
+		$dialog.trigger( 'wpqv:open' );
+		// Move focus to close button — first focusable, helps screen readers
+		// immediately orient to the dialog's purpose.
+		$dialog.find( '.wpqv__close' ).trigger( 'focus' );
+	}
+
+	function closeModal() {
+		if ( currentRequest ) {
+			currentRequest.abort();
+			currentRequest = null;
+		}
+
+		$( loadingSpinner ).removeClass( 'active' );
+		$loading.removeClass( 'active' );
+		$live.text( '' );
+		$dialog.removeAttr( 'aria-busy' );
+
+		dialog.close();
+		container.html( '' );
+
+		$dialog.trigger( 'wpqv:close' );
+
+		// Return focus to the trigger that opened the modal.
+		if ( lastTrigger ) {
+			lastTrigger.focus();
+		}
+	}
+
+	// -------------------------------------------------------------------------
+	// Product loading
+	// -------------------------------------------------------------------------
+
 	function loadProduct( productId, nextProductId, prevProductId, $spinnerButton ) {
 		if ( currentRequest ) {
 			currentRequest.abort();
 		}
+
+		$live.text( wpqv_params.i18n.loading );
+		$dialog.attr( 'aria-busy', 'true' );
 
 		currentRequest = $.ajax( {
 			url:      wpqv_params.ajax_url,
@@ -75,28 +131,31 @@ jQuery( document ).ready( function( $ ) {
 				if ( $spinnerButton ) {
 					$spinnerButton.find( loadingSpinner ).removeClass( 'active' );
 				}
-				modalLoadingWrapper.removeClass( 'active' );
+				$loading.removeClass( 'active' );
+				$dialog.removeAttr( 'aria-busy' );
 
 				if ( ! response.success ) {
+					$live.text( '' );
 					return;
 				}
 
 				container.html( response.data );
 
-				// Make the wrapper visible but invisible to the eye before
-				// initialising the gallery. Flexslider requires the element to
-				// have layout (non-zero dimensions) to measure slide heights
-				// correctly. Without this the slider collapses on open.
-				wrapper.css( { visibility: 'hidden', display: 'block' } );
+				// Make the dialog visible but invisible to the eye so that
+				// flexslider can measure slide dimensions before the dialog
+				// is shown to the user. Without real layout the slider
+				// collapses to zero height on first open.
+				dialog.style.visibility = 'hidden';
+				if ( ! dialog.open ) {
+					dialog.showModal();
+				}
 				initQuickViewGallery( container );
+				dialog.style.visibility = '';
 
-				// Disable PhotoSwipe's nested-lightbox click handler that WC
-				// attaches to gallery image links. The quick view modal should
-				// not open a second popup on top of itself.
-				container.find( '.woocommerce-product-gallery__image > a' ).off( 'click' );
-
-				// Restore display control to CSS and reveal the modal.
-				wrapper.css( { visibility: '', display: '' } );
+				// Announce the loaded product name to screen readers via the
+				// live region and set it as the dialog's accessible name.
+				var title = container.find( '#wpqv-product-title' ).text();
+				$live.text( title );
 
 				var $variationForm = container.find( '.variations_form' );
 				if ( $variationForm.length ) {
@@ -104,7 +163,10 @@ jQuery( document ).ready( function( $ ) {
 					$variationForm.trigger( 'check_variations', [ '', false ] );
 				}
 
-				wrapper.addClass( 'is-open' );
+				$dialog.trigger( 'wpqv:load', [ productId ] );
+
+				// Focus the close button so keyboard users land inside the dialog.
+				$dialog.find( '.wpqv__close' ).trigger( 'focus' );
 			},
 			error: function( jqXHR ) {
 				if ( 'abort' === jqXHR.statusText ) {
@@ -114,11 +176,18 @@ jQuery( document ).ready( function( $ ) {
 				if ( $spinnerButton ) {
 					$spinnerButton.find( loadingSpinner ).removeClass( 'active' );
 				}
-				modalLoadingWrapper.removeClass( 'active' );
+				$loading.removeClass( 'active' );
+				$dialog.removeAttr( 'aria-busy' );
+				$live.text( '' );
 			},
 		} );
 	}
 
+	// -------------------------------------------------------------------------
+	// Event handlers
+	// -------------------------------------------------------------------------
+
+	// Quick View trigger button click.
 	$( document ).on( 'click', '.wpqv__trigger', function( event ) {
 		event.preventDefault();
 
@@ -126,42 +195,57 @@ jQuery( document ).ready( function( $ ) {
 			productId = $button.data( 'product_id' ),
 			adjacent  = getAdjacentIds( $button );
 
+		lastTrigger = this;
+
 		$button.find( loadingSpinner ).addClass( 'active' );
 		loadProduct( productId, adjacent.nextId, adjacent.prevId, $button );
 	} );
 
-	wrapper.on( 'click', '.modal-shadow, .quick-view-close', function( event ) {
+	// Close button click.
+	$dialog.on( 'click', '.wpqv__close', function( event ) {
 		event.preventDefault();
+		closeModal();
+	} );
 
-		if ( currentRequest ) {
-			currentRequest.abort();
-			currentRequest = null;
+	// Click on ::backdrop (the <dialog> element itself, outside modal content).
+	$dialog.on( 'click', function( event ) {
+		if ( event.target === dialog ) {
+			closeModal();
 		}
-
-		$( loadingSpinner ).removeClass( 'active' );
-		modalLoadingWrapper.removeClass( 'active' );
-		wrapper.removeClass( 'is-open' );
-		container.html( '' );
 	} );
 
-	wrapper.on( 'click', '.quick-view-nav.next', function( event ) {
+	// Esc key: native <dialog> fires 'cancel' — prevent browser's default
+	// close so we can run our own cleanup first.
+	dialog.addEventListener( 'cancel', function( event ) {
+		event.preventDefault();
+		closeModal();
+	} );
+
+	// In-modal navigation: next product.
+	$dialog.on( 'click', '.wpqv__nav-btn--next', function( event ) {
 		event.preventDefault();
 
 		var targetId = $( this ).data( 'product_id' ),
 			adjacent = getAdjacentIds( findButton( targetId ) );
 
-		modalLoadingWrapper.addClass( 'active' );
+		$loading.addClass( 'active' );
 		loadProduct( targetId, adjacent.nextId, adjacent.prevId, null );
 	} );
 
-	wrapper.on( 'click', '.quick-view-nav.prev', function( event ) {
+	// In-modal navigation: previous product.
+	$dialog.on( 'click', '.wpqv__nav-btn--prev', function( event ) {
 		event.preventDefault();
 
 		var targetId = $( this ).data( 'product_id' ),
 			adjacent = getAdjacentIds( findButton( targetId ) );
 
-		modalLoadingWrapper.addClass( 'active' );
+		$loading.addClass( 'active' );
 		loadProduct( targetId, adjacent.nextId, adjacent.prevId, null );
+	} );
+
+	// Add-to-cart feedback: announce to screen readers via live region.
+	$( document.body ).on( 'added_to_cart', function() {
+		$live.text( wpqv_params.i18n.added_to_cart );
 	} );
 
 } );
