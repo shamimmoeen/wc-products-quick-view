@@ -79,7 +79,10 @@ if ( ! class_exists( 'WPQV_Quick_View' ) ) {
 				'wpqv_params',
 				array(
 					'ajax_url' => admin_url( 'admin-ajax.php' ),
-					'nonce'    => wp_create_nonce( 'wpqv_show_product' ),
+					'i18n'     => array(
+						'loading'       => __( 'Loading product, please wait.', 'wc-products-quick-view' ),
+						'added_to_cart' => __( 'Product added to cart.', 'wc-products-quick-view' ),
+					),
 				)
 			);
 		}
@@ -112,7 +115,6 @@ if ( ! class_exists( 'WPQV_Quick_View' ) ) {
 		 * AJAX handler: load product content for the quick view modal.
 		 */
 		public function show_product() {
-			check_ajax_referer( 'wpqv_show_product', 'nonce' );
 
 			$product_id = isset( $_POST['product_id'] ) ? absint( $_POST['product_id'] ) : 0;
 			$next_id    = isset( $_POST['next_product_id'] ) ? absint( $_POST['next_product_id'] ) : 0;

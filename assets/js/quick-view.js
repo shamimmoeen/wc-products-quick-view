@@ -68,7 +68,6 @@ jQuery( document ).ready( function( $ ) {
 				next_product_id: nextProductId || 0,
 				prev_product_id: prevProductId || 0,
 				action:          'show_product',
-				nonce:           wpqv_params.nonce,
 			},
 			success: function( response ) {
 				currentRequest = null;
