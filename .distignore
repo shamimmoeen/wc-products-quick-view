@@ -1,0 +1,24 @@
+# Development and tooling files not needed in the WordPress.org distribution
+.claude
+.distignore
+.editorconfig
+.git
+.gitattributes
+.github
+.gitignore
+.DS_Store
+Thumbs.db
+CLAUDE.md
+Gruntfile.js
+package.json
+package-lock.json
+phpcs.xml
+README.md
+composer.json
+composer.lock
+wp-cli.local.yml
+node_modules
+vendor
+*.sql
+*.tar.gz
+*.zip

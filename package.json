@@ -1,0 +1,16 @@
+{
+  "name": "wc-products-quick-view",
+  "version": "2.0.0",
+  "author": "Mainul Hassan",
+  "scripts": {
+    "readme": "grunt readme",
+    "phpcs": "./vendor/bin/phpcs",
+    "i18n": "wp i18n make-pot . languages/wc-products-quick-view.pot --exclude=node_modules,vendor",
+    "plugin-zip": "wp dist-archive . ./wc-products-quick-view.zip",
+    "dist-check": "wp dist-archive . ./wc-products-quick-view.zip && unzip -l ./wc-products-quick-view.zip && rm ./wc-products-quick-view.zip"
+  },
+  "devDependencies": {
+    "grunt": "^1.6.1",
+    "grunt-wp-readme-to-markdown": "^2.1.0"
+  }
+}

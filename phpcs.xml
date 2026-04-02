@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<ruleset name="WPQV – Quick View for WooCommerce">
+
+	<description>A custom set of rules to check for WPQV – Quick View for WooCommerce plugin</description>
+
+	<exclude-pattern>/vendor/*</exclude-pattern>
+	<exclude-pattern>/node_modules/*</exclude-pattern>
+	<exclude-pattern>*.min.js</exclude-pattern>
+	<exclude-pattern>*.min.css</exclude-pattern>
+
+	<rule ref="WordPress-Extra"/>
+
+	<!-- Inline comments do not need to end with a full stop. -->
+	<rule ref="Squiz.Commenting.InlineComment">
+		<exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
+	</rule>
+
+	<!-- Files may contain both a class and a companion helper function — common WordPress pattern. -->
+	<rule ref="Universal.Files.SeparateFunctionsFromOO">
+		<exclude name="Universal.Files.SeparateFunctionsFromOO.Mixed"/>
+	</rule>
+
+	<rule ref="WordPress-Docs"/>
+
+	<rule ref="Generic.CodeAnalysis.UnusedFunctionParameter"/>
+
+	<!-- Line length is not enforced; hook names and template paths routinely exceed any reasonable limit. -->
+	<rule ref="Generic.Files.LineLength">
+		<exclude name="Generic.Files.LineLength.TooLong"/>
+		<exclude name="Generic.Files.LineLength.MaxExceeded"/>
+	</rule>
+
+	<!-- Check PHP cross-version compatibility -->
+	<config name="testVersion" value="7.4-"/>
+	<rule ref="PHPCompatibilityWP"/>
+
+	<config name="minimum_supported_wp_version" value="6.0"/>
+
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="wc-products-quick-view"/>
+			</property>
+		</properties>
+	</rule>
+
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="wpqv"/>
+			</property>
+		</properties>
+	</rule>
+
+</ruleset>
