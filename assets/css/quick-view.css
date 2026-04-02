@@ -1,23 +1,34 @@
-/*button*/
-.wc-quick-view .wc-loading-button-open,
-.woocommerce .products .product .wc-quick-view .wc-loading-button-open {
+/* ==========================================================================
+   Button
+   ========================================================================== */
+
+.wcpqv-button .wc-quick-view .wpqv-button-spinner,
+.woocommerce .products .product .wc-quick-view .wpqv-button-spinner {
 	display: none;
-	margin: 0 0 0 10px;
-	max-width: 10px;
+	margin: 0 0 0 6px;
+	vertical-align: middle;
 }
 
-.wc-quick-view .wc-loading-button-open.active,
-.woocommerce .products .product .wc-quick-view .wc-loading-button-open.active {
-	display: inline;
+.wcpqv-button .wc-quick-view .wpqv-button-spinner.active,
+.woocommerce .products .product .wc-quick-view .wpqv-button-spinner.active {
+	display: inline-block;
 }
 
-
-/*quick-view-wrapper*/
-.product-modal-open,
-.product-modal-open body {
-	overflow: hidden;
-	position: relative;
+/* CSS spinner — button */
+.wpqv-button-spinner {
+	animation: wpqv-spin 0.7s linear infinite;
+	border: 2px solid currentColor;
+	border-radius: 50%;
+	border-top-color: transparent;
+	display: inline-block;
+	height: 12px;
+	opacity: 0.7;
+	width: 12px;
 }
+
+/* ==========================================================================
+   Modal
+   ========================================================================== */
 
 #wc-product-quick-view {
 	bottom: 0;
@@ -75,6 +86,10 @@
 	text-align: center;
 }
 
+/* ==========================================================================
+   Product wrapper
+   ========================================================================== */
+
 #wc-product-quick-view .modal-content .product-wrapper {
 	padding: 15px;
 }
@@ -105,7 +120,7 @@
 #wc-product-quick-view .modal-content .product-wrapper > .images .thumbnails::after {
 	clear: both;
 	content: '';
-	display: table;	
+	display: table;
 }
 
 #wc-product-quick-view .modal-content .product-wrapper > .images .thumbnails a {
@@ -113,20 +128,21 @@
 	float: left;
 	margin: 0 0 10px;
 	padding: 0 5px;
+	width: 25%;
 }
 
 #wc-product-quick-view .modal-content .product-wrapper > .images .thumbnails a:nth-child(4n+1) {
 	clear: left;
 }
 
-#wc-product-quick-view .modal-content .product-wrapper > .images .thumbnails a {
-	width: 25%;
-}
-
 #wc-product-quick-view .modal-content .product-wrapper > .images .thumbnails a img {
 	max-width: 100%;
 	height: auto;
 }
+
+/* ==========================================================================
+   Product brief
+   ========================================================================== */
 
 #wc-product-quick-view .modal-content .product-wrapper .product-brief .title {
 	font-size: 28px;
@@ -199,7 +215,7 @@
 
 #wc-product-quick-view .modal-content .product-wrapper .product-brief .single_variation > .price {
 	display: block;
-	font-family: "Helvetica Neue",sans-serif;
+	font-family: "Helvetica Neue", sans-serif;
 	margin-top: 15px;
 }
 
@@ -239,18 +255,26 @@
 	margin-bottom: 15px;
 }
 
+/* ==========================================================================
+   Close button
+   ========================================================================== */
+
 #wc-product-quick-view .quick-view-close {
 	background-color: #fff;
 	box-shadow: -1px 1px 3px rgba(0, 0, 0, 0.8);
-	height: 24px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	height: 34px;
 	padding: 5px;
 	position: absolute;
-	width: 24px;
+	width: 34px;
 	z-index: 6;
 }
 
-#wc-product-quick-view .quick-view-close img {
-	vertical-align: top;
+#wc-product-quick-view .quick-view-close svg {
+	display: block;
+	fill: currentColor;
 }
 
 #wc-product-quick-view .quick-view-close:active,
@@ -258,9 +282,13 @@
 	outline: none;
 }
 
+/* ==========================================================================
+   Navigation
+   ========================================================================== */
+
 #wc-product-quick-view .modal-content .nav-wrapper {
-	position: absolute;
 	height: 100%;
+	position: absolute;
 	width: 100%;
 	z-index: -1;
 }
@@ -268,15 +296,12 @@
 #wc-product-quick-view .modal-content .nav-wrapper .nav-wrapper-inner {
 	position: relative;
 	top: 50%;
-	-webkit-transform: translateY(-50%);
-	-moz-transform: translateY(-50%);
-	-o-transform: translateY(-50%);
-	-transform: translateY(-50%);
+	transform: translateY(-50%);
 }
 
 #wc-product-quick-view .modal-content .nav-wrapper .nav-wrapper-inner::after {
-	content: '';
 	clear: both;
+	content: '';
 	display: table;
 }
 
@@ -290,13 +315,25 @@
 
 #wc-product-quick-view .modal-content .prev-button,
 #wc-product-quick-view .modal-content .next-button {
-	background-color: transparent;
-	box-shadow: none;
-	display: inline-block;
+	background-color: #fff;
+	box-shadow: -1px 1px 3px rgba(0, 0, 0, 0.5);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	height: 34px;
 	position: relative;
-	top: 50%;
-	width: 20px;
+	width: 34px;
 }
+
+#wc-product-quick-view .modal-content .prev-button svg,
+#wc-product-quick-view .modal-content .next-button svg {
+	display: block;
+	fill: currentColor;
+}
+
+/* ==========================================================================
+   Modal loading spinner
+   ========================================================================== */
 
 #wc-product-quick-view .modal-loading {
 	display: none;
@@ -321,15 +358,34 @@
 	transform: translate(-50%, -50%);
 }
 
+/* CSS spinner — modal */
+.wpqv-spinner {
+	animation: wpqv-spin 0.7s linear infinite;
+	border: 3px solid rgba(0, 0, 0, 0.15);
+	border-radius: 50%;
+	border-top-color: rgba(0, 0, 0, 0.6);
+	display: block;
+	height: 36px;
+	width: 36px;
+}
 
-/*responsive style*/
+@keyframes wpqv-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
 @media (min-width: 1200px) {
 	#wc-product-quick-view .modal-container {
 		max-width: 980px;
 	}
 
 	#wc-product-quick-view .modal-content .nav-wrapper .nav-wrapper-inner {
-		margin: 0 -100px;
+		margin: 0 -50px;
 	}
 }
 
@@ -339,7 +395,7 @@
 	}
 
 	#wc-product-quick-view .modal-content .nav-wrapper .nav-wrapper-inner {
-		margin: 0 -70px;
+		margin: 0 -50px;
 	}
 }
 
@@ -368,8 +424,8 @@
 	}
 
 	#wc-product-quick-view .quick-view-close {
-		right: -12px;
-		top: -12px;
+		right: -17px;
+		top: -17px;
 	}
 }
 
@@ -393,7 +449,7 @@
 	}
 
 	#wc-product-quick-view .quick-view-close {
-		right: -7px;
-		top: -7px;
-	}	
+		right: -10px;
+		top: -10px;
+	}
 }
