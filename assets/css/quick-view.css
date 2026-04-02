@@ -42,6 +42,10 @@
 	z-index: 9999;
 }
 
+#wc-product-quick-view.is-open {
+	display: block;
+}
+
 #wc-product-quick-view .wc-quick-view-modal {
 	position: relative;
 }
@@ -144,7 +148,7 @@
    Product brief
    ========================================================================== */
 
-#wc-product-quick-view .modal-content .product-wrapper .product-brief .title {
+#wc-product-quick-view .modal-content .product-wrapper .product-brief .product_title {
 	font-size: 28px;
 	font-weight: 300;
 	letter-spacing: -1px;
@@ -261,7 +265,9 @@
 
 #wc-product-quick-view .quick-view-close {
 	background-color: #fff;
+	border: 0;
 	box-shadow: -1px 1px 3px rgba(0, 0, 0, 0.8);
+	cursor: pointer;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -316,7 +322,9 @@
 #wc-product-quick-view .modal-content .prev-button,
 #wc-product-quick-view .modal-content .next-button {
 	background-color: #fff;
+	border: 0;
 	box-shadow: -1px 1px 3px rgba(0, 0, 0, 0.5);
+	cursor: pointer;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;

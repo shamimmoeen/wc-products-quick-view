@@ -8,7 +8,8 @@ jQuery( document ).ready( function( $ ) {
 	var wrapper             = $( '#wc-product-quick-view' ),
 		container           = wrapper.find( '.wc-quick-view-content' ),
 		modalLoadingWrapper = wrapper.find( '.modal-loading' ),
-		loadingSpinner      = '.wpqv-button-spinner';
+		loadingSpinner      = '.wpqv-button-spinner',
+		currentRequest      = null;
 
 	function initQuickViewGallery( $context ) {
 		var $galleries = $context.find( '.woocommerce-product-gallery' );
@@ -19,31 +20,63 @@ jQuery( document ).ready( function( $ ) {
 
 		$galleries.each( function() {
 			var $gallery = $( this );
-			$gallery.trigger( 'wc-product-gallery-before-init', [ $gallery, wc_single_product_params ] );
+			$gallery.trigger( 'wc-product-gallery-before-init', [ $gallery, wc_single_product_params || {} ] );
 			$gallery.wc_product_gallery( wc_single_product_params || {} );
-			$gallery.trigger( 'wc-product-gallery-after-init', [ $gallery, wc_single_product_params ] );
+			$gallery.trigger( 'wc-product-gallery-after-init', [ $gallery, wc_single_product_params || {} ] );
 		} );
 	}
 
-	function loadProduct( productId, nextProductId, prevProductId, loadViaButton, showModalLoader ) {
-		$.ajax( {
+	/**
+	 * Returns the prev/next product IDs relative to $button's position
+	 * among all quick view buttons currently in the DOM.
+	 */
+	function getAdjacentIds( $button ) {
+		var $allButtons = $( '.wc-quick-view' );
+		var index       = $allButtons.index( $button );
+
+		if ( index === -1 ) {
+			return { prevId: undefined, nextId: undefined };
+		}
+
+		return {
+			prevId: index > 0 ? $allButtons.eq( index - 1 ).data( 'product_id' ) : undefined,
+			nextId: index < $allButtons.length - 1 ? $allButtons.eq( index + 1 ).data( 'product_id' ) : undefined,
+		};
+	}
+
+	/**
+	 * Finds the quick view button on the page for a given product ID.
+	 * Used during nav to look up that product's adjacent buttons.
+	 */
+	function findButton( productId ) {
+		return $( '.wc-quick-view' ).filter( function() {
+			return parseInt( $( this ).data( 'product_id' ), 10 ) === parseInt( productId, 10 );
+		} ).first();
+	}
+
+	function loadProduct( productId, nextProductId, prevProductId, $spinnerButton ) {
+		if ( currentRequest ) {
+			currentRequest.abort();
+		}
+
+		currentRequest = $.ajax( {
 			url:      wpqv_params.ajax_url,
 			type:     'POST',
 			dataType: 'json',
 			data: {
 				product_id:      productId,
-				next_product_id: nextProductId,
-				prev_product_id: prevProductId,
+				next_product_id: nextProductId || 0,
+				prev_product_id: prevProductId || 0,
 				action:          'show_product',
 				nonce:           wpqv_params.nonce,
 			},
 			success: function( response ) {
-				if ( loadViaButton ) {
-					$( loadingSpinner ).removeClass( 'active' );
+				currentRequest = null;
+
+				if ( $spinnerButton ) {
+					$spinnerButton.find( loadingSpinner ).removeClass( 'active' );
 				}
-				if ( showModalLoader ) {
-					modalLoadingWrapper.removeClass( 'active' );
-				}
+				modalLoadingWrapper.removeClass( 'active' );
 
 				if ( ! response.success ) {
 					return;
@@ -58,63 +91,64 @@ jQuery( document ).ready( function( $ ) {
 					$variationForm.trigger( 'check_variations', [ '', false ] );
 				}
 
-				wrapper.css( 'display', 'block' );
+				wrapper.addClass( 'is-open' );
 			},
-		} );
-	}
-
-	function changeQuantity() {
-		$( 'form.cart' ).on( 'change', 'input.qty', function() {
-			$( this.form ).find( 'button[data-quantity]' ).data( 'quantity', this.value );
+			error: function( jqXHR ) {
+				if ( 'abort' === jqXHR.statusText ) {
+					return;
+				}
+				currentRequest = null;
+				if ( $spinnerButton ) {
+					$spinnerButton.find( loadingSpinner ).removeClass( 'active' );
+				}
+				modalLoadingWrapper.removeClass( 'active' );
+			},
 		} );
 	}
 
 	$( document ).on( 'click', '.wc-quick-view', function( event ) {
 		event.preventDefault();
 
-		var $button  = $( this ),
-			$product = $button.parents( '.type-product' ),
-			id       = $button.attr( 'data-product_id' ),
-			nextId   = $product.next().find( '.wc-quick-view' ).attr( 'data-product_id' ),
-			prevId   = $product.prev().find( '.wc-quick-view' ).attr( 'data-product_id' );
+		var $button   = $( this ),
+			productId = $button.data( 'product_id' ),
+			adjacent  = getAdjacentIds( $button );
 
 		$button.find( loadingSpinner ).addClass( 'active' );
-		$product.addClass( 'current-item' );
-		loadProduct( id, nextId, prevId, true, false );
+		loadProduct( productId, adjacent.nextId, adjacent.prevId, $button );
 	} );
 
 	wrapper.on( 'click', '.modal-shadow, .quick-view-close', function( event ) {
 		event.preventDefault();
-		$( '.type-product' ).removeClass( 'current-item' );
-		wrapper.removeAttr( 'style' );
+
+		if ( currentRequest ) {
+			currentRequest.abort();
+			currentRequest = null;
+		}
+
+		$( loadingSpinner ).removeClass( 'active' );
+		modalLoadingWrapper.removeClass( 'active' );
+		wrapper.removeClass( 'is-open' );
 		container.html( '' );
 	} );
 
 	wrapper.on( 'click', '.quick-view-nav.next', function( event ) {
 		event.preventDefault();
+
+		var targetId = $( this ).data( 'product_id' ),
+			adjacent = getAdjacentIds( findButton( targetId ) );
+
 		modalLoadingWrapper.addClass( 'active' );
-
-		var $current = $( '.type-product.current-item' ),
-			id       = $current.next().find( '.wc-quick-view' ).attr( 'data-product_id' ),
-			nextId   = $current.next().next().find( '.wc-quick-view' ).attr( 'data-product_id' ),
-			prevId   = $current.find( '.wc-quick-view' ).attr( 'data-product_id' );
-
-		$current.removeClass( 'current-item' ).next().addClass( 'current-item' );
-		loadProduct( id, nextId, prevId, false, true );
+		loadProduct( targetId, adjacent.nextId, adjacent.prevId, null );
 	} );
 
 	wrapper.on( 'click', '.quick-view-nav.prev', function( event ) {
 		event.preventDefault();
+
+		var targetId = $( this ).data( 'product_id' ),
+			adjacent = getAdjacentIds( findButton( targetId ) );
+
 		modalLoadingWrapper.addClass( 'active' );
-
-		var $current = $( '.type-product.current-item' ),
-			id       = $current.prev().find( '.wc-quick-view' ).attr( 'data-product_id' ),
-			prevId   = $current.prev().prev().find( '.wc-quick-view' ).attr( 'data-product_id' ),
-			nextId   = $current.find( '.wc-quick-view' ).attr( 'data-product_id' );
-
-		$current.removeClass( 'current-item' ).prev().addClass( 'current-item' );
-		loadProduct( id, nextId, prevId, false, true );
+		loadProduct( targetId, adjacent.nextId, adjacent.prevId, null );
 	} );
 
-	changeQuantity();
 } );
