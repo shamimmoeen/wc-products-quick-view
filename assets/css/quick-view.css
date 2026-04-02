@@ -46,6 +46,16 @@
 }
 
 /* ==========================================================================
+   Gallery
+   ========================================================================== */
+
+/* Hide WooCommerce's expand/PhotoSwipe trigger button — the modal must not
+   open a nested lightbox on top of itself. */
+#wc-product-quick-view .woocommerce-product-gallery__trigger {
+	display: none;
+}
+
+/* ==========================================================================
    Modal
    ========================================================================== */
 

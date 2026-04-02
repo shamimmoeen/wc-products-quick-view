@@ -52,16 +52,13 @@ if ( ! class_exists( 'WPQV_Quick_View' ) ) {
 				WPQV_VERSION
 			);
 
-			if ( current_theme_supports( 'wc-product-gallery-zoom' ) ) {
-				wp_enqueue_script( 'wc-zoom' );
-			}
-			if ( current_theme_supports( 'wc-product-gallery-slider' ) ) {
+			// Slider and magnify are controlled by settings.
+			// PhotoSwipe (nested lightbox) is never loaded in the modal context.
+			if ( WPQV_Settings::get( 'enable_slider' ) ) {
 				wp_enqueue_script( 'wc-flexslider' );
 			}
-			if ( current_theme_supports( 'wc-product-gallery-lightbox' ) ) {
-				wp_enqueue_script( 'wc-photoswipe-ui-default' );
-				wp_enqueue_style( 'photoswipe-default-skin' );
-				add_action( 'wp_footer', 'woocommerce_photoswipe' );
+			if ( WPQV_Settings::get( 'enable_magnify' ) ) {
+				wp_enqueue_script( 'wc-zoom' );
 			}
 
 			wp_enqueue_script( 'wc-single-product' );
@@ -131,15 +128,25 @@ if ( ! class_exists( 'WPQV_Quick_View' ) ) {
 				$post = get_post( $product_id ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 				setup_postdata( $post );
 
+				$template_args = array(
+					'next_id'    => $next_id,
+					'prev_id'    => $prev_id,
+					'next_class' => 'wpqv__nav-btn wpqv__nav-btn--next quick-view-nav next',
+					'prev_class' => 'wpqv__nav-btn wpqv__nav-btn--prev quick-view-nav prev',
+				);
+
+				/**
+				 * Filters the arguments passed to the product modal template.
+				 *
+				 * @param array<string, mixed> $template_args Template arguments.
+				 * @param int                  $product_id    Current product ID.
+				 */
+				$template_args = apply_filters( 'wpqv_product_template_args', $template_args, $product_id );
+
 				ob_start();
 				wc_get_template(
 					'product.php',
-					array(
-						'next_id'    => $next_id,
-						'prev_id'    => $prev_id,
-						'next_class' => 'quick-view-nav next',
-						'prev_class' => 'quick-view-nav prev',
-					),
+					$template_args,
 					'wc-products-quick-view/',
 					WPQV_TEMPLATE_PATH
 				);

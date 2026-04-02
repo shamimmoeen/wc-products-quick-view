@@ -82,7 +82,21 @@ jQuery( document ).ready( function( $ ) {
 				}
 
 				container.html( response.data );
+
+				// Make the wrapper visible but invisible to the eye before
+				// initialising the gallery. Flexslider requires the element to
+				// have layout (non-zero dimensions) to measure slide heights
+				// correctly. Without this the slider collapses on open.
+				wrapper.css( { visibility: 'hidden', display: 'block' } );
 				initQuickViewGallery( container );
+
+				// Disable PhotoSwipe's nested-lightbox click handler that WC
+				// attaches to gallery image links. The quick view modal should
+				// not open a second popup on top of itself.
+				container.find( '.woocommerce-product-gallery__image > a' ).off( 'click' );
+
+				// Restore display control to CSS and reveal the modal.
+				wrapper.css( { visibility: '', display: '' } );
 
 				var $variationForm = container.find( '.variations_form' );
 				if ( $variationForm.length ) {
