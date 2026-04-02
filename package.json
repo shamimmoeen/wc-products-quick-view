@@ -4,6 +4,7 @@
   "author": "Mainul Hassan",
   "scripts": {
     "readme": "grunt readme",
+    "css": "grunt sass",
     "phpcs": "./vendor/bin/phpcs",
     "i18n": "wp i18n make-pot . languages/wc-products-quick-view.pot --exclude=node_modules,vendor",
     "plugin-zip": "wp dist-archive . ./wc-products-quick-view.zip",
@@ -11,6 +12,8 @@
   },
   "devDependencies": {
     "grunt": "^1.6.1",
-    "grunt-wp-readme-to-markdown": "^2.1.0"
+    "grunt-sass": "^3.1.0",
+    "grunt-wp-readme-to-markdown": "^2.1.0",
+    "sass": "^1.77.0"
   }
 }

@@ -1,0 +1,440 @@
+// =============================================================================
+// Modal — <dialog> element
+// =============================================================================
+
+#wpqv-dialog {
+	// Reset browser <dialog> default border, padding, and size constraints.
+	border: 0;
+	max-height: none;
+	max-width: none;
+	overflow-x: hidden;
+	overflow-y: auto;
+	padding: 0;
+
+	&::backdrop {
+		background-color: rgba( 0, 0, 0, 0.85 );
+	}
+
+	img {
+		max-width: 100%;
+		height: auto;
+	}
+
+	// Focus visible on all interactive elements inside the dialog.
+	*:focus-visible {
+		outline: 2px solid currentColor;
+		outline-offset: 2px;
+	}
+
+	.wpqv__modal {
+		position: relative;
+	}
+
+	.wpqv__container {
+		margin: 0 auto;
+		padding: 65px 0;
+		position: relative;
+		z-index: 2;
+	}
+
+	.wpqv__modal-content {
+		background-color: #fff;
+		clear: both;
+		margin-left: -15px;
+		margin-right: -15px;
+		position: relative;
+
+		* {
+			box-sizing: border-box;
+		}
+	}
+
+	.wpqv__bottom-nav {
+		clear: both;
+		padding: 0 15px 20px;
+		text-align: center;
+	}
+}
+
+// =============================================================================
+// Product wrapper
+// =============================================================================
+
+#wpqv-dialog .wpqv__modal-content {
+	.wpqv__product {
+		padding: 15px;
+
+		&::after {
+			clear: both;
+			content: '';
+			display: table;
+		}
+
+		a {
+			outline: none;
+			text-decoration: none;
+
+			&:hover,
+			&:focus,
+			&:active {
+				outline: none;
+				text-decoration: none;
+			}
+		}
+
+		> .images {
+			.thumbnails {
+				margin: 10px -5px 0;
+				padding: 0;
+
+				&::after {
+					clear: both;
+					content: '';
+					display: table;
+				}
+
+				a {
+					clear: inherit;
+					float: left;
+					margin: 0 0 10px;
+					padding: 0 5px;
+					width: 25%;
+
+					&:nth-child( 4n+1 ) {
+						clear: left;
+					}
+
+					img {
+						max-width: 100%;
+						height: auto;
+					}
+				}
+			}
+		}
+	}
+}
+
+// =============================================================================
+// Product brief
+// =============================================================================
+
+#wpqv-dialog .wpqv__modal-content .wpqv__product .wpqv__brief {
+	.product_title {
+		font-size: 28px;
+		font-weight: 300;
+		letter-spacing: -1px;
+		margin-bottom: 20px;
+		margin-top: 0;
+	}
+
+	.star-rating {
+		margin-bottom: 20px;
+	}
+
+	p.price del,
+	span.price del {
+		display: inline-block;
+	}
+
+	> .price {
+		display: block;
+		margin-bottom: 15px;
+	}
+
+	form.cart {
+		border-color: rgba( 0, 0, 0, 0.024 );
+		border-style: solid;
+		border-width: 3px 0;
+		padding: 25px 0;
+
+		&::after {
+			clear: both;
+			content: '';
+			display: table;
+		}
+	}
+
+	.product_meta {
+		margin-top: 25px;
+
+		> span {
+			border-top: 1px solid rgba( 0, 0, 0, 0.1 );
+			display: block;
+			margin: 10px 0;
+			padding-top: 10px;
+		}
+	}
+
+	table {
+		margin-bottom: 0;
+		width: 100%;
+
+		tbody td {
+			background: transparent;
+			padding: 0;
+			text-align: left;
+			vertical-align: middle;
+		}
+	}
+
+	.variations {
+		select {
+			margin: 0;
+			padding: 0;
+			width: auto;
+		}
+
+		.reset_variations {
+			line-height: 1.7;
+			margin-left: 15px;
+		}
+	}
+
+	.single_variation > .price {
+		display: block;
+		font-family: "Helvetica Neue", sans-serif;
+		margin-top: 15px;
+	}
+
+	.variations_button {
+		border-top: 1px solid rgba( 0, 0, 0, 0.1 );
+		margin-top: 25px;
+		padding-top: 25px;
+
+		&::after {
+			clear: both;
+			content: '';
+			display: table;
+		}
+	}
+
+	.quantity {
+		float: left;
+	}
+
+	.single_add_to_cart_button {
+		float: left;
+		margin: 0 0 0 5px;
+	}
+
+	.added_to_cart.wc-forward {
+		margin: 0 0 0 5px;
+	}
+
+	p {
+		margin-bottom: 15px;
+	}
+}
+
+// =============================================================================
+// Close button
+// =============================================================================
+
+#wpqv-dialog .wpqv__close {
+	background-color: #fff;
+	border: 0;
+	box-shadow: -1px 1px 3px rgba( 0, 0, 0, 0.8 );
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	height: 34px;
+	padding: 5px;
+	position: absolute;
+	width: 34px;
+	z-index: 6;
+
+	svg {
+		display: block;
+		fill: currentColor;
+	}
+}
+
+// =============================================================================
+// Navigation
+// =============================================================================
+
+#wpqv-dialog .wpqv__modal-content {
+	.wpqv__nav {
+		height: 100%;
+		position: absolute;
+		width: 100%;
+		z-index: -1;
+
+		.wpqv__nav-inner {
+			position: relative;
+			top: 50%;
+			transform: translateY( -50% );
+
+			&::after {
+				clear: both;
+				content: '';
+				display: table;
+			}
+		}
+
+		.wpqv__nav-side--prev {
+			float: left;
+		}
+
+		.wpqv__nav-side--next {
+			float: right;
+		}
+	}
+
+	.wpqv__nav-btn {
+		background-color: #fff;
+		border: 0;
+		box-shadow: -1px 1px 3px rgba( 0, 0, 0, 0.5 );
+		cursor: pointer;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		height: 34px;
+		position: relative;
+		width: 34px;
+
+		svg {
+			display: block;
+			fill: currentColor;
+		}
+	}
+}
+
+// =============================================================================
+// Modal loading spinner
+// =============================================================================
+
+#wpqv-dialog .wpqv__loading {
+	display: none;
+
+	&.active {
+		background-color: #fff;
+		bottom: 0;
+		display: block;
+		left: 0;
+		position: absolute;
+		right: 0;
+		text-align: center;
+		top: 0;
+		z-index: 5;
+
+		.wpqv__loading-inner {
+			left: 50%;
+			position: absolute;
+			top: 50%;
+			transform: translate( -50%, -50% );
+		}
+	}
+}
+
+// CSS spinner — modal
+.wpqv__spinner--modal {
+	animation: wpqv-spin 0.7s linear infinite;
+	border: 3px solid rgba( 0, 0, 0, 0.15 );
+	border-radius: 50%;
+	border-top-color: rgba( 0, 0, 0, 0.6 );
+	display: block;
+	height: 36px;
+	width: 36px;
+}
+
+// =============================================================================
+// Keyframes
+// =============================================================================
+
+@keyframes wpqv-spin {
+	to {
+		transform: rotate( 360deg );
+	}
+}
+
+// =============================================================================
+// Accessibility
+// =============================================================================
+
+@media ( prefers-reduced-motion: reduce ) {
+	.wpqv__spinner--inline,
+	.wpqv__spinner--modal {
+		animation: none;
+	}
+}
+
+// =============================================================================
+// Responsive
+// =============================================================================
+
+@media ( min-width: 1200px ) {
+	#wpqv-dialog .wpqv__container {
+		max-width: 980px;
+	}
+
+	#wpqv-dialog .wpqv__modal-content .wpqv__nav .wpqv__nav-inner {
+		margin: 0 -50px;
+	}
+}
+
+@media ( min-width: 980px ) and ( max-width: 1199px ) {
+	#wpqv-dialog .wpqv__container {
+		width: 80%;
+	}
+
+	#wpqv-dialog .wpqv__modal-content .wpqv__nav .wpqv__nav-inner {
+		margin: 0 -50px;
+	}
+}
+
+@media ( min-width: 768px ) and ( max-width: 979px ) {
+	#wpqv-dialog .wpqv__container {
+		width: 90%;
+	}
+
+	#wpqv-dialog .wpqv__modal-content .wpqv__nav {
+		display: none;
+	}
+}
+
+@media ( min-width: 768px ) {
+	#wpqv-dialog .wpqv__modal-content .wpqv__product > .images {
+		float: left;
+		margin: 0;
+		padding-right: 10px;
+		width: 40%;
+	}
+
+	#wpqv-dialog .wpqv__modal-content .wpqv__product .wpqv__brief {
+		float: left;
+		padding-left: 10px;
+		width: 60%;
+	}
+
+	#wpqv-dialog .wpqv__close {
+		right: -17px;
+		top: -17px;
+	}
+}
+
+@media ( min-width: 980px ) {
+	#wpqv-dialog .wpqv__bottom-nav {
+		display: none;
+	}
+}
+
+@media ( max-width: 767px ) {
+	#wpqv-dialog .wpqv__container {
+		width: 85%;
+	}
+
+	#wpqv-dialog .wpqv__modal-content .wpqv__product > .images {
+		margin-bottom: 25px;
+	}
+
+	#wpqv-dialog .wpqv__modal-content .wpqv__nav {
+		display: none;
+	}
+
+	#wpqv-dialog .wpqv__close {
+		right: -10px;
+		top: -10px;
+	}
+}

@@ -1,0 +1,51 @@
+// =============================================================================
+// Button
+// =============================================================================
+
+.wpqv__button-wrap {
+	display: inline-block;
+}
+
+.wpqv__trigger {
+	.wpqv__spinner--inline,
+	.woocommerce .products .product & .wpqv__spinner--inline {
+		display: none;
+		margin: 0 0 0 6px;
+		vertical-align: middle;
+	}
+
+	.wpqv__spinner--inline.active,
+	.woocommerce .products .product & .wpqv__spinner--inline.active {
+		display: inline-block;
+	}
+
+	&:focus-visible {
+		outline: 2px solid currentColor;
+		outline-offset: 2px;
+	}
+}
+
+// Overlay style: positioned over the product image.
+// Override --wpqv-overlay-bottom and --wpqv-overlay-end in your theme CSS
+// using media queries to adjust placement per breakpoint.
+.wpqv__trigger--overlay {
+	--wpqv-overlay-bottom: 10px;
+	--wpqv-overlay-end: 10px;
+
+	position: absolute;
+	inset-block-end: var( --wpqv-overlay-bottom );
+	inset-inline-end: var( --wpqv-overlay-end );
+	z-index: 1;
+}
+
+// CSS spinner — inline (button)
+.wpqv__spinner--inline {
+	animation: wpqv-spin 0.7s linear infinite;
+	border: 2px solid currentColor;
+	border-radius: 50%;
+	border-top-color: transparent;
+	display: inline-block;
+	height: 12px;
+	opacity: 0.7;
+	width: 12px;
+}
