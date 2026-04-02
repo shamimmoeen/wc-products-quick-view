@@ -2,20 +2,39 @@
    Button
    ========================================================================== */
 
-.wcpqv-button .wc-quick-view .wpqv-button-spinner,
-.woocommerce .products .product .wc-quick-view .wpqv-button-spinner {
+.wpqv__button-wrap {
+	display: inline-block;
+}
+
+.wpqv__trigger .wpqv__spinner--inline,
+.woocommerce .products .product .wpqv__trigger .wpqv__spinner--inline {
 	display: none;
 	margin: 0 0 0 6px;
 	vertical-align: middle;
 }
 
-.wcpqv-button .wc-quick-view .wpqv-button-spinner.active,
-.woocommerce .products .product .wc-quick-view .wpqv-button-spinner.active {
+.wpqv__trigger .wpqv__spinner--inline.active,
+.woocommerce .products .product .wpqv__trigger .wpqv__spinner--inline.active {
 	display: inline-block;
 }
 
-/* CSS spinner — button */
-.wpqv-button-spinner {
+.wpqv__trigger:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+
+/* Overlay style: positioned over the product image */
+.wpqv__trigger--overlay {
+	--wpqv-overlay-bottom: 10px;
+	--wpqv-overlay-end: 10px;
+	position: absolute;
+	inset-block-end: var( --wpqv-overlay-bottom );
+	inset-inline-end: var( --wpqv-overlay-end );
+	z-index: 1;
+}
+
+/* CSS spinner — inline (button) */
+.wpqv__spinner--inline {
 	animation: wpqv-spin 0.7s linear infinite;
 	border: 2px solid currentColor;
 	border-radius: 50%;

@@ -8,7 +8,7 @@ jQuery( document ).ready( function( $ ) {
 	var wrapper             = $( '#wc-product-quick-view' ),
 		container           = wrapper.find( '.wc-quick-view-content' ),
 		modalLoadingWrapper = wrapper.find( '.modal-loading' ),
-		loadingSpinner      = '.wpqv-button-spinner',
+		loadingSpinner      = '.wpqv__spinner--inline',
 		currentRequest      = null;
 
 	function initQuickViewGallery( $context ) {
@@ -31,7 +31,7 @@ jQuery( document ).ready( function( $ ) {
 	 * among all quick view buttons currently in the DOM.
 	 */
 	function getAdjacentIds( $button ) {
-		var $allButtons = $( '.wc-quick-view' );
+		var $allButtons = $( '.wpqv__trigger' );
 		var index       = $allButtons.index( $button );
 
 		if ( index === -1 ) {
@@ -49,7 +49,7 @@ jQuery( document ).ready( function( $ ) {
 	 * Used during nav to look up that product's adjacent buttons.
 	 */
 	function findButton( productId ) {
-		return $( '.wc-quick-view' ).filter( function() {
+		return $( '.wpqv__trigger' ).filter( function() {
 			return parseInt( $( this ).data( 'product_id' ), 10 ) === parseInt( productId, 10 );
 		} ).first();
 	}
@@ -106,7 +106,7 @@ jQuery( document ).ready( function( $ ) {
 		} );
 	}
 
-	$( document ).on( 'click', '.wc-quick-view', function( event ) {
+	$( document ).on( 'click', '.wpqv__trigger', function( event ) {
 		event.preventDefault();
 
 		var $button   = $( this ),
