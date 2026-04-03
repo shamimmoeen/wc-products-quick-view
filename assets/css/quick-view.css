@@ -1,479 +1,381 @@
-/* ==========================================================================
-   Button
-   ========================================================================== */
-
+@charset "UTF-8";
+/*!
+ * WPQV – Quick View for WooCommerce
+ * Frontend styles
+ *
+ * Compiled from assets/scss/quick-view.scss
+ * Source files: _button.scss, _gallery.scss, _modal.scss
+ */
 .wpqv__button-wrap {
-	display: inline-block;
+  display: inline-block;
 }
 
-.wpqv__trigger .wpqv__spinner--inline,
-.woocommerce .products .product .wpqv__trigger .wpqv__spinner--inline {
-	display: none;
-	margin: 0 0 0 6px;
-	vertical-align: middle;
+.wpqv__trigger .wpqv__spinner--inline, .woocommerce .products .product .wpqv__trigger .wpqv__spinner--inline {
+  display: none;
+  margin: 0 0 0 6px;
+  vertical-align: middle;
 }
-
-.wpqv__trigger .wpqv__spinner--inline.active,
-.woocommerce .products .product .wpqv__trigger .wpqv__spinner--inline.active {
-	display: inline-block;
+.wpqv__trigger .wpqv__spinner--inline.active, .woocommerce .products .product .wpqv__trigger .wpqv__spinner--inline.active {
+  display: inline-block;
 }
-
 .wpqv__trigger:focus-visible {
-	outline: 2px solid currentColor;
-	outline-offset: 2px;
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
 }
 
-/* Overlay style: positioned over the product image */
 .wpqv__trigger--overlay {
-	--wpqv-overlay-bottom: 10px;
-	--wpqv-overlay-end: 10px;
-	position: absolute;
-	inset-block-end: var( --wpqv-overlay-bottom );
-	inset-inline-end: var( --wpqv-overlay-end );
-	z-index: 1;
+  --wpqv-overlay-bottom: 10px;
+  --wpqv-overlay-end: 10px;
+  position: absolute;
+  inset-block-end: var(--wpqv-overlay-bottom);
+  inset-inline-end: var(--wpqv-overlay-end);
+  z-index: 1;
 }
 
-/* CSS spinner — inline (button) */
 .wpqv__spinner--inline {
-	animation: wpqv-spin 0.7s linear infinite;
-	border: 2px solid currentColor;
-	border-radius: 50%;
-	border-top-color: transparent;
-	display: inline-block;
-	height: 12px;
-	opacity: 0.7;
-	width: 12px;
+  animation: wpqv-spin 0.7s linear infinite;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  border-top-color: transparent;
+  display: inline-block;
+  height: 12px;
+  opacity: 0.7;
+  width: 12px;
 }
 
-/* ==========================================================================
-   Gallery
-   ========================================================================== */
-
-/* Hide WooCommerce's expand/PhotoSwipe trigger button — the modal must not
-   open a nested lightbox on top of itself. */
 #wpqv-dialog .woocommerce-product-gallery__trigger {
-	display: none;
+  display: none;
 }
-
-/* ==========================================================================
-   Modal — <dialog> element
-   ========================================================================== */
 
 #wpqv-dialog {
-	/* Reset browser <dialog> default border, padding, and size constraints. */
-	border: 0;
-	max-height: none;
-	max-width: none;
-	overflow-x: hidden;
-	overflow-y: auto;
-	padding: 0;
+  border: 0;
+  max-height: none;
+  max-width: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 0;
 }
-
 #wpqv-dialog::backdrop {
-	background-color: rgba( 0, 0, 0, 0.85 );
+  background-color: rgba(0, 0, 0, 0.85);
 }
-
 #wpqv-dialog img {
-	max-width: 100%;
-	height: auto;
+  max-width: 100%;
+  height: auto;
 }
-
-#wpqv-dialog .wpqv__modal {
-	position: relative;
-}
-
-#wpqv-dialog .wpqv__container {
-	margin: 0 auto;
-	padding: 65px 0;
-	position: relative;
-	z-index: 2;
-}
-
-#wpqv-dialog .wpqv__modal-content {
-	background-color: #fff;
-	clear: both;
-	margin-left: -15px;
-	margin-right: -15px;
-	position: relative;
-}
-
-#wpqv-dialog .wpqv__modal-content * {
-	box-sizing: border-box;
-}
-
-#wpqv-dialog .wpqv__bottom-nav {
-	clear: both;
-	padding: 0 15px 20px;
-	text-align: center;
-}
-
-/* Focus visible on all interactive elements inside the dialog */
 #wpqv-dialog *:focus-visible {
-	outline: 2px solid currentColor;
-	outline-offset: 2px;
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
 }
-
-/* ==========================================================================
-   Product wrapper
-   ========================================================================== */
+#wpqv-dialog .wpqv__modal {
+  position: relative;
+}
+#wpqv-dialog .wpqv__container {
+  margin: 0 auto;
+  padding: 65px 0;
+  position: relative;
+  z-index: 2;
+}
+#wpqv-dialog .wpqv__modal-content {
+  background-color: #fff;
+  clear: both;
+  margin-left: -15px;
+  margin-right: -15px;
+  position: relative;
+}
+#wpqv-dialog .wpqv__modal-content * {
+  box-sizing: border-box;
+}
+#wpqv-dialog .wpqv__bottom-nav {
+  clear: both;
+  padding: 0 15px 20px;
+  text-align: center;
+}
 
 #wpqv-dialog .wpqv__modal-content .wpqv__product {
-	padding: 15px;
+  padding: 15px;
 }
-
 #wpqv-dialog .wpqv__modal-content .wpqv__product::after {
-	clear: both;
-	content: '';
-	display: table;
+  clear: both;
+  content: "";
+  display: table;
 }
-
-#wpqv-dialog .wpqv__modal-content .wpqv__product a,
-#wpqv-dialog .wpqv__modal-content .wpqv__product a:hover,
-#wpqv-dialog .wpqv__modal-content .wpqv__product a:focus,
-#wpqv-dialog .wpqv__modal-content .wpqv__product a:active {
-	outline: none;
-	text-decoration: none;
+#wpqv-dialog .wpqv__modal-content .wpqv__product a {
+  outline: none;
+  text-decoration: none;
 }
-
+#wpqv-dialog .wpqv__modal-content .wpqv__product a:hover, #wpqv-dialog .wpqv__modal-content .wpqv__product a:focus, #wpqv-dialog .wpqv__modal-content .wpqv__product a:active {
+  outline: none;
+  text-decoration: none;
+}
 #wpqv-dialog .wpqv__modal-content .wpqv__product > .images .thumbnails {
-	margin: 10px -5px 0;
-	padding: 0;
+  margin: 10px -5px 0;
+  padding: 0;
 }
-
 #wpqv-dialog .wpqv__modal-content .wpqv__product > .images .thumbnails::after {
-	clear: both;
-	content: '';
-	display: table;
+  clear: both;
+  content: "";
+  display: table;
 }
-
 #wpqv-dialog .wpqv__modal-content .wpqv__product > .images .thumbnails a {
-	clear: inherit;
-	float: left;
-	margin: 0 0 10px;
-	padding: 0 5px;
-	width: 25%;
+  clear: inherit;
+  float: left;
+  margin: 0 0 10px;
+  padding: 0 5px;
+  width: 25%;
 }
-
-#wpqv-dialog .wpqv__modal-content .wpqv__product > .images .thumbnails a:nth-child( 4n+1 ) {
-	clear: left;
+#wpqv-dialog .wpqv__modal-content .wpqv__product > .images .thumbnails a:nth-child(4n+1) {
+  clear: left;
 }
-
 #wpqv-dialog .wpqv__modal-content .wpqv__product > .images .thumbnails a img {
-	max-width: 100%;
-	height: auto;
+  max-width: 100%;
+  height: auto;
 }
-
-/* ==========================================================================
-   Product brief
-   ========================================================================== */
 
 #wpqv-dialog .wpqv__modal-content .wpqv__product .wpqv__brief .product_title {
-	font-size: 28px;
-	font-weight: 300;
-	letter-spacing: -1px;
-	margin-bottom: 20px;
-	margin-top: 0;
+  font-size: 28px;
+  font-weight: 300;
+  letter-spacing: -1px;
+  margin-bottom: 20px;
+  margin-top: 0;
 }
-
 #wpqv-dialog .wpqv__modal-content .wpqv__product .wpqv__brief .star-rating {
-	margin-bottom: 20px;
+  margin-bottom: 20px;
 }
-
 #wpqv-dialog .wpqv__modal-content .wpqv__product .wpqv__brief p.price del,
 #wpqv-dialog .wpqv__modal-content .wpqv__product .wpqv__brief span.price del {
-	display: inline-block;
+  display: inline-block;
 }
-
 #wpqv-dialog .wpqv__modal-content .wpqv__product .wpqv__brief > .price {
-	display: block;
-	margin-bottom: 15px;
+  display: block;
+  margin-bottom: 15px;
 }
-
 #wpqv-dialog .wpqv__modal-content .wpqv__product .wpqv__brief form.cart {
-	border-color: rgba( 0, 0, 0, 0.024 );
-	border-style: solid;
-	border-width: 3px 0;
-	padding: 25px 0;
+  border-color: rgba(0, 0, 0, 0.024);
+  border-style: solid;
+  border-width: 3px 0;
+  padding: 25px 0;
 }
-
 #wpqv-dialog .wpqv__modal-content .wpqv__product .wpqv__brief form.cart::after {
-	clear: both;
-	content: '';
-	display: table;
+  clear: both;
+  content: "";
+  display: table;
 }
-
 #wpqv-dialog .wpqv__modal-content .wpqv__product .wpqv__brief .product_meta {
-	margin-top: 25px;
+  margin-top: 25px;
 }
-
 #wpqv-dialog .wpqv__modal-content .wpqv__product .wpqv__brief .product_meta > span {
-	border-top: 1px solid rgba( 0, 0, 0, 0.1 );
-	display: block;
-	margin: 10px 0;
-	padding-top: 10px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  display: block;
+  margin: 10px 0;
+  padding-top: 10px;
 }
-
 #wpqv-dialog .wpqv__modal-content .wpqv__product .wpqv__brief table {
-	margin-bottom: 0;
-	width: 100%;
+  margin-bottom: 0;
+  width: 100%;
 }
-
 #wpqv-dialog .wpqv__modal-content .wpqv__product .wpqv__brief table tbody td {
-	background: transparent;
-	padding: 0;
-	text-align: left;
-	vertical-align: middle;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+  vertical-align: middle;
 }
-
 #wpqv-dialog .wpqv__modal-content .wpqv__product .wpqv__brief .variations select {
-	margin: 0;
-	padding: 0;
-	width: auto;
+  margin: 0;
+  padding: 0;
+  width: auto;
 }
-
 #wpqv-dialog .wpqv__modal-content .wpqv__product .wpqv__brief .variations .reset_variations {
-	line-height: 1.7;
-	margin-left: 15px;
+  line-height: 1.7;
+  margin-left: 15px;
 }
-
 #wpqv-dialog .wpqv__modal-content .wpqv__product .wpqv__brief .single_variation > .price {
-	display: block;
-	font-family: "Helvetica Neue", sans-serif;
-	margin-top: 15px;
+  display: block;
+  font-family: "Helvetica Neue", sans-serif;
+  margin-top: 15px;
 }
-
 #wpqv-dialog .wpqv__modal-content .wpqv__product .wpqv__brief .variations_button {
-	border-top: 1px solid rgba( 0, 0, 0, 0.1 );
-	margin-top: 25px;
-	padding-top: 25px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  margin-top: 25px;
+  padding-top: 25px;
 }
-
 #wpqv-dialog .wpqv__modal-content .wpqv__product .wpqv__brief .variations_button::after {
-	clear: both;
-	content: '';
-	display: table;
+  clear: both;
+  content: "";
+  display: table;
 }
-
 #wpqv-dialog .wpqv__modal-content .wpqv__product .wpqv__brief .quantity {
-	float: left;
+  float: left;
 }
-
 #wpqv-dialog .wpqv__modal-content .wpqv__product .wpqv__brief .single_add_to_cart_button {
-	float: left;
-	margin: 0 0 0 5px;
+  float: left;
+  margin: 0 0 0 5px;
 }
-
 #wpqv-dialog .wpqv__modal-content .wpqv__product .wpqv__brief .added_to_cart.wc-forward {
-	margin: 0 0 0 5px;
+  margin: 0 0 0 5px;
 }
-
 #wpqv-dialog .wpqv__modal-content .wpqv__product .wpqv__brief p {
-	margin-bottom: 15px;
+  margin-bottom: 15px;
 }
-
-/* ==========================================================================
-   Close button
-   ========================================================================== */
 
 #wpqv-dialog .wpqv__close {
-	background-color: #fff;
-	border: 0;
-	box-shadow: -1px 1px 3px rgba( 0, 0, 0, 0.8 );
-	cursor: pointer;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	height: 34px;
-	padding: 5px;
-	position: absolute;
-	width: 34px;
-	z-index: 6;
+  background-color: #fff;
+  border: 0;
+  box-shadow: -1px 1px 3px rgba(0, 0, 0, 0.8);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  padding: 5px;
+  position: absolute;
+  width: 34px;
+  z-index: 6;
 }
-
 #wpqv-dialog .wpqv__close svg {
-	display: block;
-	fill: currentColor;
+  display: block;
+  fill: currentColor;
 }
-
-/* ==========================================================================
-   Navigation
-   ========================================================================== */
 
 #wpqv-dialog .wpqv__modal-content .wpqv__nav {
-	height: 100%;
-	position: absolute;
-	width: 100%;
-	z-index: -1;
+  height: 100%;
+  position: absolute;
+  width: 100%;
+  z-index: -1;
 }
-
 #wpqv-dialog .wpqv__modal-content .wpqv__nav .wpqv__nav-inner {
-	position: relative;
-	top: 50%;
-	transform: translateY( -50% );
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
 }
-
 #wpqv-dialog .wpqv__modal-content .wpqv__nav .wpqv__nav-inner::after {
-	clear: both;
-	content: '';
-	display: table;
+  clear: both;
+  content: "";
+  display: table;
 }
-
 #wpqv-dialog .wpqv__modal-content .wpqv__nav .wpqv__nav-side--prev {
-	float: left;
+  float: left;
 }
-
 #wpqv-dialog .wpqv__modal-content .wpqv__nav .wpqv__nav-side--next {
-	float: right;
+  float: right;
 }
-
 #wpqv-dialog .wpqv__modal-content .wpqv__nav-btn {
-	background-color: #fff;
-	border: 0;
-	box-shadow: -1px 1px 3px rgba( 0, 0, 0, 0.5 );
-	cursor: pointer;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	height: 34px;
-	position: relative;
-	width: 34px;
+  background-color: #fff;
+  border: 0;
+  box-shadow: -1px 1px 3px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  position: relative;
+  width: 34px;
 }
-
 #wpqv-dialog .wpqv__modal-content .wpqv__nav-btn svg {
-	display: block;
-	fill: currentColor;
+  display: block;
+  fill: currentColor;
 }
-
-/* ==========================================================================
-   Modal loading spinner
-   ========================================================================== */
 
 #wpqv-dialog .wpqv__loading {
-	display: none;
+  display: none;
 }
-
 #wpqv-dialog .wpqv__loading.active {
-	background-color: #fff;
-	bottom: 0;
-	display: block;
-	left: 0;
-	position: absolute;
-	right: 0;
-	text-align: center;
-	top: 0;
-	z-index: 5;
+  background-color: #fff;
+  bottom: 0;
+  display: block;
+  left: 0;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  top: 0;
+  z-index: 5;
 }
-
 #wpqv-dialog .wpqv__loading.active .wpqv__loading-inner {
-	left: 50%;
-	position: absolute;
-	top: 50%;
-	transform: translate( -50%, -50% );
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 
-/* CSS spinner — modal */
 .wpqv__spinner--modal {
-	animation: wpqv-spin 0.7s linear infinite;
-	border: 3px solid rgba( 0, 0, 0, 0.15 );
-	border-radius: 50%;
-	border-top-color: rgba( 0, 0, 0, 0.6 );
-	display: block;
-	height: 36px;
-	width: 36px;
+  animation: wpqv-spin 0.7s linear infinite;
+  border: 3px solid rgba(0, 0, 0, 0.15);
+  border-radius: 50%;
+  border-top-color: rgba(0, 0, 0, 0.6);
+  display: block;
+  height: 36px;
+  width: 36px;
 }
 
 @keyframes wpqv-spin {
-	to {
-		transform: rotate( 360deg );
-	}
+  to {
+    transform: rotate(360deg);
+  }
 }
-
-/* ==========================================================================
-   Accessibility
-   ========================================================================== */
-
-@media ( prefers-reduced-motion: reduce ) {
-	.wpqv__spinner--inline,
-	.wpqv__spinner--modal {
-		animation: none;
-	}
+@media (prefers-reduced-motion: reduce) {
+  .wpqv__spinner--inline,
+  .wpqv__spinner--modal {
+    animation: none;
+  }
 }
-
-/* ==========================================================================
-   Responsive
-   ========================================================================== */
-
-@media ( min-width: 1200px ) {
-	#wpqv-dialog .wpqv__container {
-		max-width: 980px;
-	}
-
-	#wpqv-dialog .wpqv__modal-content .wpqv__nav .wpqv__nav-inner {
-		margin: 0 -50px;
-	}
+@media (min-width: 1200px) {
+  #wpqv-dialog .wpqv__container {
+    max-width: 980px;
+  }
+  #wpqv-dialog .wpqv__modal-content .wpqv__nav .wpqv__nav-inner {
+    margin: 0 -50px;
+  }
 }
-
-@media ( min-width: 980px ) and ( max-width: 1199px ) {
-	#wpqv-dialog .wpqv__container {
-		width: 80%;
-	}
-
-	#wpqv-dialog .wpqv__modal-content .wpqv__nav .wpqv__nav-inner {
-		margin: 0 -50px;
-	}
+@media (min-width: 980px) and (max-width: 1199px) {
+  #wpqv-dialog .wpqv__container {
+    width: 80%;
+  }
+  #wpqv-dialog .wpqv__modal-content .wpqv__nav .wpqv__nav-inner {
+    margin: 0 -50px;
+  }
 }
-
-@media ( min-width: 768px ) and ( max-width: 979px ) {
-	#wpqv-dialog .wpqv__container {
-		width: 90%;
-	}
-
-	#wpqv-dialog .wpqv__modal-content .wpqv__nav {
-		display: none;
-	}
+@media (min-width: 768px) and (max-width: 979px) {
+  #wpqv-dialog .wpqv__container {
+    width: 90%;
+  }
+  #wpqv-dialog .wpqv__modal-content .wpqv__nav {
+    display: none;
+  }
 }
-
-@media ( min-width: 768px ) {
-	#wpqv-dialog .wpqv__modal-content .wpqv__product > .images {
-		float: left;
-		margin: 0;
-		padding-right: 10px;
-		width: 40%;
-	}
-
-	#wpqv-dialog .wpqv__modal-content .wpqv__product .wpqv__brief {
-		float: left;
-		padding-left: 10px;
-		width: 60%;
-	}
-
-	#wpqv-dialog .wpqv__close {
-		right: -17px;
-		top: -17px;
-	}
+@media (min-width: 768px) {
+  #wpqv-dialog .wpqv__modal-content .wpqv__product > .images {
+    float: left;
+    margin: 0;
+    padding-right: 10px;
+    width: 40%;
+  }
+  #wpqv-dialog .wpqv__modal-content .wpqv__product .wpqv__brief {
+    float: left;
+    padding-left: 10px;
+    width: 60%;
+  }
+  #wpqv-dialog .wpqv__close {
+    right: -17px;
+    top: -17px;
+  }
 }
-
-@media ( min-width: 980px ) {
-	#wpqv-dialog .wpqv__bottom-nav {
-		display: none;
-	}
+@media (min-width: 980px) {
+  #wpqv-dialog .wpqv__bottom-nav {
+    display: none;
+  }
 }
-
-@media ( max-width: 767px ) {
-	#wpqv-dialog .wpqv__container {
-		width: 85%;
-	}
-
-	#wpqv-dialog .wpqv__modal-content .wpqv__product > .images {
-		margin-bottom: 25px;
-	}
-
-	#wpqv-dialog .wpqv__modal-content .wpqv__nav {
-		display: none;
-	}
-
-	#wpqv-dialog .wpqv__close {
-		right: -10px;
-		top: -10px;
-	}
+@media (max-width: 767px) {
+  #wpqv-dialog .wpqv__container {
+    width: 85%;
+  }
+  #wpqv-dialog .wpqv__modal-content .wpqv__product > .images {
+    margin-bottom: 25px;
+  }
+  #wpqv-dialog .wpqv__modal-content .wpqv__nav {
+    display: none;
+  }
+  #wpqv-dialog .wpqv__close {
+    right: -10px;
+    top: -10px;
+  }
 }
+/*# sourceMappingURL=quick-view.css.map */

@@ -6,3 +6,5 @@ vendor/
 *.sql
 *.tar.gz
 *.zip
+assets/css/*.map
+assets/js/*.map

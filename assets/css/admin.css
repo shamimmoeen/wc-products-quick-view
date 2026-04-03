@@ -1,21 +1,9 @@
-/* ==========================================================================
-   WPQV Admin Settings Page
-   ========================================================================== */
-
-.wpqv-settings-page .wpqv-admin-icon-option {
-	display: inline-flex;
-	align-items: center;
-	gap: 6px;
-	margin-right: 20px;
-	margin-bottom: 8px;
-	cursor: pointer;
+@charset "UTF-8";
+/*!
+ * WPQV – Quick View for WooCommerce
+ * Admin styles
+ */
+.woocommerce_page_wc-settings-wpqv .wpqv-admin-icon-option svg {
+  vertical-align: middle;
 }
-
-.wpqv-settings-page .wpqv-admin-icon-option svg {
-	vertical-align: middle;
-	fill: currentColor;
-}
-
-.wpqv-settings-page .form-table th {
-	width: 200px;
-}
+/*# sourceMappingURL=admin.css.map */

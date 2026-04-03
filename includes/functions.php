@@ -10,7 +10,7 @@ if ( ! function_exists( 'wpqv_button' ) ) {
 	 * Output the quick view button for the current product in the loop.
 	 */
 	function wpqv_button() {
-		global $post, $product;
+		global $post;
 
 		$product_name = $post ? get_the_title( $post->ID ) : '';
 

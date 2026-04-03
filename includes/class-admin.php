@@ -8,7 +8,7 @@
 if ( ! class_exists( 'WPQV_Admin' ) ) {
 
 	/**
-	 * Registers the Quick View settings page under the WooCommerce menu.
+	 * Registers the Quick View settings as a WooCommerce Settings tab.
 	 */
 	class WPQV_Admin {
 
@@ -35,155 +35,186 @@ if ( ! class_exists( 'WPQV_Admin' ) ) {
 		 * Constructor.
 		 */
 		private function __construct() {
-			add_action( 'admin_menu', array( $this, 'add_menu_page' ) );
-			add_action( 'admin_init', array( $this, 'register_settings' ) );
-			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
-		}
-
-		/**
-		 * Adds the settings page under WooCommerce.
-		 */
-		public function add_menu_page() {
-			add_submenu_page(
-				'woocommerce',
-				__( 'Quick View Settings', 'wc-products-quick-view' ),
-				__( 'Quick View', 'wc-products-quick-view' ),
-				'manage_options',
-				'wpqv-settings',
-				array( $this, 'render_page' )
+			add_filter( 'woocommerce_settings_tabs_array', array( $this, 'add_settings_tab' ), 50 );
+			add_action( 'woocommerce_settings_wpqv',       array( $this, 'render_settings'  ) );
+			add_action( 'woocommerce_update_options_wpqv', array( $this, 'save_settings'    ) );
+			add_action( 'admin_enqueue_scripts',           array( $this, 'enqueue_assets'   ) );
+			add_filter(
+				'plugin_action_links_wc-products-quick-view/wc-products-quick-view.php',
+				array( $this, 'add_action_links' )
 			);
 		}
 
 		/**
-		 * Enqueues admin stylesheet on the plugin's own page only.
+		 * Adds the Quick View tab to the WooCommerce Settings tab bar.
+		 *
+		 * @param array<string, string> $tabs Existing tabs.
+		 * @return array<string, string>
+		 */
+		public function add_settings_tab( $tabs ) {
+			$tabs['wpqv'] = __( 'Quick View', 'wc-products-quick-view' );
+			return $tabs;
+		}
+
+		/**
+		 * Enqueues admin stylesheet on the WPQV settings tab only.
 		 *
 		 * @param string $hook Current admin page hook.
 		 */
 		public function enqueue_assets( $hook ) {
-			if ( 'woocommerce_page_wpqv-settings' !== $hook ) {
+			if ( 'woocommerce_page_wc-settings' !== $hook ) {
 				return;
 			}
+
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			if ( empty( $_GET['tab'] ) || 'wpqv' !== $_GET['tab'] ) {
+				return;
+			}
+
+			$min      = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
+			$css_file = '/assets/css/admin' . $min . '.css';
+
 			wp_enqueue_style(
 				'wpqv-admin',
-				WPQV_URL . '/assets/css/admin.css',
+				WPQV_URL . $css_file,
 				array(),
-				WPQV_VERSION
+				filemtime( WPQV_PATH . $css_file )
 			);
 		}
 
 		/**
-		 * Registers all settings, sections, and fields via the WordPress Settings API.
+		 * Adds a Settings link to the plugin's row on the Plugins page.
+		 *
+		 * @param array<string> $links Existing action links.
+		 * @return array<string>
 		 */
-		public function register_settings() {
-			register_setting(
-				'wpqv_settings_group',
-				WPQV_Settings::OPTION_KEY,
-				array(
-					'sanitize_callback' => array( $this, 'sanitize_settings' ),
-				)
-			);
-
-			// ----------------------------------------------------------------
-			// Section: Button
-			// ----------------------------------------------------------------
-			add_settings_section(
-				'wpqv_section_button',
-				__( 'Button', 'wc-products-quick-view' ),
-				'__return_false',
-				'wpqv-settings'
-			);
-
-			add_settings_field(
-				'button_position',
-				__( 'Position', 'wc-products-quick-view' ),
-				array( $this, 'field_button_position' ),
-				'wpqv-settings',
-				'wpqv_section_button'
-			);
-
-			add_settings_field(
-				'button_priority',
-				__( 'Hook priority', 'wc-products-quick-view' ),
-				array( $this, 'field_button_priority' ),
-				'wpqv-settings',
-				'wpqv_section_button'
-			);
-
-			add_settings_field(
-				'button_label',
-				__( 'Button label', 'wc-products-quick-view' ),
-				array( $this, 'field_button_label' ),
-				'wpqv-settings',
-				'wpqv_section_button'
-			);
-
-			add_settings_field(
-				'button_style',
-				__( 'Button style', 'wc-products-quick-view' ),
-				array( $this, 'field_button_style' ),
-				'wpqv-settings',
-				'wpqv_section_button'
-			);
-
-			add_settings_field(
-				'button_icon',
-				__( 'Icon', 'wc-products-quick-view' ),
-				array( $this, 'field_button_icon' ),
-				'wpqv-settings',
-				'wpqv_section_button'
-			);
-
-			add_settings_field(
-				'button_icon_position',
-				__( 'Icon position', 'wc-products-quick-view' ),
-				array( $this, 'field_button_icon_position' ),
-				'wpqv-settings',
-				'wpqv_section_button'
-			);
-
-			// ----------------------------------------------------------------
-			// Section: Gallery
-			// ----------------------------------------------------------------
-			add_settings_section(
-				'wpqv_section_gallery',
-				__( 'Gallery', 'wc-products-quick-view' ),
-				'__return_false',
-				'wpqv-settings'
-			);
-
-			add_settings_field(
-				'enable_slider',
-				__( 'Image slider', 'wc-products-quick-view' ),
-				array( $this, 'field_enable_slider' ),
-				'wpqv-settings',
-				'wpqv_section_gallery'
-			);
-
-			add_settings_field(
-				'enable_magnify',
-				__( 'Hover magnify', 'wc-products-quick-view' ),
-				array( $this, 'field_enable_magnify' ),
-				'wpqv-settings',
-				'wpqv_section_gallery'
-			);
+		public function add_action_links( $links ) {
+			$settings_link = '<a href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=wpqv' ) ) . '">'
+				. esc_html__( 'Settings', 'wc-products-quick-view' ) . '</a>';
+			array_unshift( $links, $settings_link );
+			return $links;
 		}
 
 		// ====================================================================
-		// Field renderers
+		// Settings page renderer
+		// ====================================================================
+
+		/**
+		 * Renders all settings fields for the WPQV tab inside WooCommerce's form.
+		 *
+		 * WooCommerce owns the <form> and nonce; we output section headings,
+		 * descriptions, and a standard <table class="form-table"> for each section.
+		 */
+		public function render_settings() {
+			// ----------------------------------------------------------------
+			// Section: Button
+			// ----------------------------------------------------------------
+			?>
+			<h2><?php esc_html_e( 'Button', 'wc-products-quick-view' ); ?></h2>
+			<div id="wpqv_button_options-description">
+				<p><?php esc_html_e( 'Controls the Quick View trigger button displayed on product cards.', 'wc-products-quick-view' ); ?></p>
+			</div>
+			<table class="form-table">
+				<tbody>
+					<tr>
+						<th scope="row" class="titledesc">
+							<label for="wpqv_button_position"><?php esc_html_e( 'Position', 'wc-products-quick-view' ); ?></label>
+						</th>
+						<td class="forminp forminp-select">
+							<?php $this->field_button_position(); ?>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row" class="titledesc">
+							<label for="wpqv_button_priority"><?php esc_html_e( 'Hook priority', 'wc-products-quick-view' ); ?></label>
+						</th>
+						<td class="forminp forminp-number">
+							<?php $this->field_button_priority(); ?>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row" class="titledesc">
+							<label for="wpqv_button_label"><?php esc_html_e( 'Button label', 'wc-products-quick-view' ); ?></label>
+						</th>
+						<td class="forminp forminp-text">
+							<?php $this->field_button_label(); ?>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row" class="titledesc">
+							<?php esc_html_e( 'Button style', 'wc-products-quick-view' ); ?>
+						</th>
+						<td class="forminp forminp-radio">
+							<?php $this->field_button_style(); ?>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row" class="titledesc">
+							<?php esc_html_e( 'Icon', 'wc-products-quick-view' ); ?>
+						</th>
+						<td class="forminp forminp-radio">
+							<?php $this->field_button_icon(); ?>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row" class="titledesc">
+							<?php esc_html_e( 'Icon position', 'wc-products-quick-view' ); ?>
+						</th>
+						<td class="forminp forminp-radio">
+							<?php $this->field_button_icon_position(); ?>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<?php
+			// ----------------------------------------------------------------
+			// Section: Gallery
+			// ----------------------------------------------------------------
+			?>
+			<h2><?php esc_html_e( 'Gallery', 'wc-products-quick-view' ); ?></h2>
+			<div id="wpqv_gallery_options-description">
+				<p><?php esc_html_e( 'Controls how product images behave inside the quick view modal.', 'wc-products-quick-view' ); ?></p>
+			</div>
+			<table class="form-table">
+				<tbody>
+					<tr>
+						<th scope="row" class="titledesc">
+							<?php esc_html_e( 'Image slider', 'wc-products-quick-view' ); ?>
+						</th>
+						<td class="forminp forminp-checkbox">
+							<?php $this->field_enable_slider(); ?>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row" class="titledesc">
+							<?php esc_html_e( 'Hover magnify', 'wc-products-quick-view' ); ?>
+						</th>
+						<td class="forminp forminp-checkbox">
+							<?php $this->field_enable_magnify(); ?>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<?php
+		}
+
+		// ====================================================================
+		// Field renderers — output <td> content only
 		// ====================================================================
 
 		/**
 		 * Renders the button position select field.
 		 */
 		public function field_button_position() {
-			$value = WPQV_Settings::get( 'button_position' );
+			$value   = WPQV_Settings::get( 'button_position' );
 			$options = array(
 				'woocommerce_before_shop_loop_item_title' => __( 'Before title (after image)', 'wc-products-quick-view' ),
 				'woocommerce_after_shop_loop_item_title'  => __( 'After title', 'wc-products-quick-view' ),
 				'woocommerce_after_shop_loop_item'        => __( 'After add to cart button', 'wc-products-quick-view' ),
 				'wpqv_overlay'                            => __( 'Over product image (icon overlay)', 'wc-products-quick-view' ),
 			);
-			echo '<select name="' . esc_attr( WPQV_Settings::OPTION_KEY ) . '[button_position]" id="wpqv_button_position">';
+			echo '<select name="' . esc_attr( WPQV_Settings::OPTION_KEY ) . '[button_position]" id="wpqv_button_position" class="wc-enhanced-select">';
 			foreach ( $options as $key => $label ) {
 				echo '<option value="' . esc_attr( $key ) . '"' . selected( $value, $key, false ) . '>' . esc_html( $label ) . '</option>';
 			}
@@ -196,7 +227,7 @@ if ( ! class_exists( 'WPQV_Admin' ) ) {
 		 */
 		public function field_button_priority() {
 			$value = absint( WPQV_Settings::get( 'button_priority' ) );
-			echo '<input type="number" min="1" max="99" step="1"
+			echo '<input type="number" style="width: 60px;" min="1" max="99" step="1"
 				name="' . esc_attr( WPQV_Settings::OPTION_KEY ) . '[button_priority]"
 				id="wpqv_button_priority"
 				value="' . esc_attr( $value ) . '"
@@ -220,20 +251,22 @@ if ( ! class_exists( 'WPQV_Admin' ) ) {
 		 * Renders the button style radio field.
 		 */
 		public function field_button_style() {
-			$value = WPQV_Settings::get( 'button_style' );
+			$value   = WPQV_Settings::get( 'button_style' );
 			$options = array(
 				'default' => __( 'Default (plugin-styled)', 'wc-products-quick-view' ),
 				'theme'   => __( 'Inherit from theme', 'wc-products-quick-view' ),
 			);
+			echo '<fieldset><ul>';
 			foreach ( $options as $key => $label ) {
-				echo '<label style="display:block;margin-bottom:6px;">';
+				echo '<li><label>';
 				echo '<input type="radio"
 					name="' . esc_attr( WPQV_Settings::OPTION_KEY ) . '[button_style]"
 					value="' . esc_attr( $key ) . '"'
 					. checked( $value, $key, false ) . '> ';
 				echo esc_html( $label );
-				echo '</label>';
+				echo '</label></li>';
 			}
+			echo '</ul></fieldset>';
 			echo '<p class="description">' . esc_html__( '"Inherit from theme" removes plugin button styles so your theme\'s button design applies.', 'wc-products-quick-view' ) . '</p>';
 		}
 
@@ -242,40 +275,44 @@ if ( ! class_exists( 'WPQV_Admin' ) ) {
 		 */
 		public function field_button_icon() {
 			$value = WPQV_Settings::get( 'button_icon' );
-			$icons = self::get_icon_options();
+			$icons = WPQV_Settings::get_icon_options();
+			echo '<fieldset><ul>';
 			foreach ( $icons as $key => $data ) {
-				echo '<label class="wpqv-admin-icon-option">';
+				echo '<li><label class="wpqv-admin-icon-option">';
 				echo '<input type="radio"
 					name="' . esc_attr( WPQV_Settings::OPTION_KEY ) . '[button_icon]"
 					value="' . esc_attr( $key ) . '"'
 					. checked( $value, $key, false ) . '> ';
 				if ( ! empty( $data['svg'] ) ) {
-					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- SVGs are hardcoded in this file, not user input.
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- SVGs are hardcoded in WPQV_Settings, not user input.
 					echo $data['svg'];
 				}
 				echo ' ' . esc_html( $data['label'] );
-				echo '</label>';
+				echo '</label></li>';
 			}
+			echo '</ul></fieldset>';
 		}
 
 		/**
 		 * Renders the icon position radio field.
 		 */
 		public function field_button_icon_position() {
-			$value = WPQV_Settings::get( 'button_icon_position' );
+			$value   = WPQV_Settings::get( 'button_icon_position' );
 			$options = array(
 				'before' => __( 'Before label', 'wc-products-quick-view' ),
 				'after'  => __( 'After label', 'wc-products-quick-view' ),
 			);
+			echo '<fieldset><ul>';
 			foreach ( $options as $key => $label ) {
-				echo '<label style="margin-right:16px;">';
+				echo '<li><label>';
 				echo '<input type="radio"
 					name="' . esc_attr( WPQV_Settings::OPTION_KEY ) . '[button_icon_position]"
 					value="' . esc_attr( $key ) . '"'
 					. checked( $value, $key, false ) . '> ';
 				echo esc_html( $label );
-				echo '</label>';
+				echo '</label></li>';
 			}
+			echo '</ul></fieldset>';
 		}
 
 		/**
@@ -283,13 +320,16 @@ if ( ! class_exists( 'WPQV_Admin' ) ) {
 		 */
 		public function field_enable_slider() {
 			$value = WPQV_Settings::get( 'enable_slider' );
-			echo '<label>';
+			echo '<fieldset>';
+			echo '<legend class="screen-reader-text"><span>' . esc_html__( 'Image slider', 'wc-products-quick-view' ) . '</span></legend>';
+			echo '<label for="wpqv_enable_slider">';
 			echo '<input type="checkbox"
 				name="' . esc_attr( WPQV_Settings::OPTION_KEY ) . '[enable_slider]"
 				id="wpqv_enable_slider"
 				value="1"' . checked( 1, $value, false ) . '>';
 			echo ' ' . esc_html__( 'Enable image slider in the modal (WooCommerce flexslider)', 'wc-products-quick-view' );
 			echo '</label>';
+			echo '</fieldset>';
 		}
 
 		/**
@@ -297,13 +337,32 @@ if ( ! class_exists( 'WPQV_Admin' ) ) {
 		 */
 		public function field_enable_magnify() {
 			$value = WPQV_Settings::get( 'enable_magnify' );
-			echo '<label>';
+			echo '<fieldset>';
+			echo '<legend class="screen-reader-text"><span>' . esc_html__( 'Hover magnify', 'wc-products-quick-view' ) . '</span></legend>';
+			echo '<label for="wpqv_enable_magnify">';
 			echo '<input type="checkbox"
 				name="' . esc_attr( WPQV_Settings::OPTION_KEY ) . '[enable_magnify]"
 				id="wpqv_enable_magnify"
 				value="1"' . checked( 1, $value, false ) . '>';
 			echo ' ' . esc_html__( 'Enable hover magnify on product images', 'wc-products-quick-view' );
 			echo '</label>';
+			echo '</fieldset>';
+		}
+
+		// ====================================================================
+		// Save handler
+		// ====================================================================
+
+		/**
+		 * Saves settings when WooCommerce fires the tab update action.
+		 *
+		 * WooCommerce verifies the woocommerce-settings nonce before this hook
+		 * fires, so no additional nonce check is required here.
+		 */
+		public function save_settings() {
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$input = isset( $_POST[ WPQV_Settings::OPTION_KEY ] ) ? (array) $_POST[ WPQV_Settings::OPTION_KEY ] : array();
+			update_option( WPQV_Settings::OPTION_KEY, $this->sanitize_settings( $input ) );
 		}
 
 		// ====================================================================
@@ -339,17 +398,17 @@ if ( ! class_exists( 'WPQV_Admin' ) ) {
 				? sanitize_text_field( $input['button_label'] )
 				: $defaults['button_label'];
 
-			$valid_styles = array( 'default', 'theme' );
+			$valid_styles          = array( 'default', 'theme' );
 			$clean['button_style'] = isset( $input['button_style'] ) && in_array( $input['button_style'], $valid_styles, true )
 				? $input['button_style']
 				: $defaults['button_style'];
 
-			$valid_icons = array_keys( self::get_icon_options() );
+			$valid_icons          = array_keys( WPQV_Settings::get_icon_options() );
 			$clean['button_icon'] = isset( $input['button_icon'] ) && in_array( $input['button_icon'], $valid_icons, true )
 				? $input['button_icon']
 				: $defaults['button_icon'];
 
-			$valid_icon_positions = array( 'before', 'after' );
+			$valid_icon_positions          = array( 'before', 'after' );
 			$clean['button_icon_position'] = isset( $input['button_icon_position'] ) && in_array( $input['button_icon_position'], $valid_icon_positions, true )
 				? $input['button_icon_position']
 				: $defaults['button_icon_position'];
@@ -358,81 +417,6 @@ if ( ! class_exists( 'WPQV_Admin' ) ) {
 			$clean['enable_magnify'] = ! empty( $input['enable_magnify'] ) ? 1 : 0;
 
 			return $clean;
-		}
-
-		// ====================================================================
-		// Page renderer
-		// ====================================================================
-
-		/**
-		 * Renders the settings page HTML.
-		 */
-		public function render_page() {
-			if ( ! current_user_can( 'manage_options' ) ) {
-				return;
-			}
-			?>
-			<div class="wrap wpqv-settings-page">
-				<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
-				<form method="post" action="options.php">
-					<?php
-					settings_fields( 'wpqv_settings_group' );
-					do_settings_sections( 'wpqv-settings' );
-					submit_button();
-					?>
-				</form>
-			</div>
-			<?php
-		}
-
-		// ====================================================================
-		// Helpers
-		// ====================================================================
-
-		/**
-		 * Returns the icon options array used for both the field renderer and
-		 * the button template helper.
-		 *
-		 * Each entry has a 'label' string and an optional 'svg' string (safe,
-		 * hardcoded inline SVG — not user input).
-		 *
-		 * @return array<string, array{label: string, svg: string}>
-		 */
-		public static function get_icon_options() {
-			return array(
-				'none'   => array(
-					'label' => __( 'None', 'wc-products-quick-view' ),
-					'svg'   => '',
-				),
-				'eye'    => array(
-					'label' => __( 'Eye', 'wc-products-quick-view' ),
-					'svg'   => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>',
-				),
-				'search' => array(
-					'label' => __( 'Search / Magnify', 'wc-products-quick-view' ),
-					'svg'   => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>',
-				),
-				'zoom'   => array(
-					'label' => __( 'Zoom in', 'wc-products-quick-view' ),
-					'svg'   => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14zm2.5-4h-2v2H9v-2H7V9h2V7h1v2h2v1z"/></svg>',
-				),
-			);
-		}
-
-		/**
-		 * Returns the inline SVG markup for a given icon key.
-		 *
-		 * Used by the button template to render the selected icon.
-		 *
-		 * @param string $icon_key Icon key (none/eye/search/zoom).
-		 * @return string SVG markup or empty string.
-		 */
-		public static function get_icon_svg( $icon_key ) {
-			$options = self::get_icon_options();
-			if ( isset( $options[ $icon_key ] ) ) {
-				return $options[ $icon_key ]['svg'];
-			}
-			return '';
 		}
 	}
 }

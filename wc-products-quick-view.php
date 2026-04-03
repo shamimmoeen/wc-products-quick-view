@@ -21,6 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'WPQV_VERSION', '2.0.0' );
 define( 'WPQV_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) );
+define( 'WPQV_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'WPQV_TEMPLATE_PATH', plugin_dir_path( __FILE__ ) . 'templates/' );
 
 add_action( 'plugins_loaded', 'wpqv_init' );
@@ -33,11 +34,8 @@ function wpqv_init() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-settings.php';
 	require_once plugin_dir_path( __FILE__ ) . 'includes/functions.php';
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-quick-view.php';
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-admin.php';
 
-	if ( is_admin() ) {
-		require_once plugin_dir_path( __FILE__ ) . 'includes/class-admin.php';
-		WPQV_Admin::get_instance();
-	}
-
+	WPQV_Admin::get_instance();
 	WPQV_Quick_View::get_instance();
 }

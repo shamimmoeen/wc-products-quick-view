@@ -1,1 +1,5 @@
 package-lock.json -diff
+
+# hide diffs for generated assets
+*.min.js -diff
+*.min.css -diff

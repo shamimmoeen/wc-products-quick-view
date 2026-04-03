@@ -45,11 +45,15 @@ if ( ! class_exists( 'WPQV_Quick_View' ) ) {
 		 * Enqueue scripts and styles.
 		 */
 		public function load_scripts() {
+			$min         = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
+			$style_file  = '/assets/css/quick-view' . $min . '.css';
+			$script_file = '/assets/js/quick-view' . $min . '.js';
+
 			wp_enqueue_style(
 				'wc-product-quick-view',
-				WPQV_URL . '/assets/css/quick-view.css',
+				WPQV_URL . $style_file,
 				array(),
-				WPQV_VERSION
+				filemtime( WPQV_PATH . $style_file )
 			);
 
 			// Slider and magnify are controlled by settings.
@@ -65,9 +69,9 @@ if ( ! class_exists( 'WPQV_Quick_View' ) ) {
 
 			wp_enqueue_script(
 				'wc-product-quick-view',
-				WPQV_URL . '/assets/js/quick-view.js',
+				WPQV_URL . $script_file,
 				array( 'jquery' ),
-				WPQV_VERSION,
+				filemtime( WPQV_PATH . $script_file ),
 				true
 			);
 
@@ -100,10 +104,12 @@ if ( ! class_exists( 'WPQV_Quick_View' ) ) {
 			<dialog id="wpqv-dialog" aria-labelledby="wpqv-product-title">
 
 				<?php // Polite live region: announces loading state, product name, and add-to-cart feedback. ?>
-				<div id="wpqv-live"
+				<div
+					id="wpqv-live"
 					class="screen-reader-text"
 					aria-live="polite"
-					aria-atomic="true"></div>
+					aria-atomic="true"
+				></div>
 
 				<div class="wpqv__modal">
 					<div class="wpqv__container">

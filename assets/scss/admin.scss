@@ -1,9 +1,16 @@
 /*!
  * WPQV – Quick View for WooCommerce
  * Admin styles
- *
- * Compiled from assets/scss/admin.scss
- * Source file: _admin.scss
  */
 
-@use 'admin';
+// =============================================================================
+// Admin Settings Page
+// =============================================================================
+
+.woocommerce_page_wc-settings-wpqv {
+	.wpqv-admin-icon-option {
+		svg {
+			vertical-align: middle;
+		}
+	}
+}

@@ -38,7 +38,7 @@ if ( 'theme' === $button_style ) {
 $aria_label = sprintf( __( 'Quick View: %s', 'wc-products-quick-view' ), $product_name );
 
 // Retrieve the icon SVG (empty string when icon is 'none').
-$icon_svg = WPQV_Admin::get_icon_svg( $button_icon );
+$icon_svg = WPQV_Settings::get_icon_svg( $button_icon );
 ?>
 <?php if ( 'default' === $button_style ) : ?>
 <div class="wpqv__button-wrap">
