@@ -74,6 +74,7 @@ jQuery( document ).ready( function( $ ) {
 	// -------------------------------------------------------------------------
 
 	function openModal() {
+		document.body.style.overflow = 'hidden';
 		dialog.showModal();
 		$dialog.trigger( 'wpqv:open' );
 		// Move focus to close button — first focusable, helps screen readers
@@ -87,13 +88,18 @@ jQuery( document ).ready( function( $ ) {
 			currentRequest = null;
 		}
 
-		$( loadingSpinner ).removeClass( 'active' );
-		$loading.removeClass( 'active' );
+		$( loadingSpinner ).removeClass( 'wpqv__spinner--active' );
+		$loading.removeClass( 'wpqv__loading--visible' );
 		$live.text( '' );
 		$dialog.removeAttr( 'aria-busy' );
 
 		dialog.close();
+		document.body.style.overflow = '';
 		container.html( '' );
+
+		// Hide nav sides.
+		$dialog.find( '.wpqv__nav-side--prev' ).attr( 'hidden', '' );
+		$dialog.find( '.wpqv__nav-side--next' ).attr( 'hidden', '' );
 
 		$dialog.trigger( 'wpqv:close' );
 
@@ -129,9 +135,9 @@ jQuery( document ).ready( function( $ ) {
 				currentRequest = null;
 
 				if ( $spinnerButton ) {
-					$spinnerButton.find( loadingSpinner ).removeClass( 'active' );
+					$spinnerButton.find( loadingSpinner ).removeClass( 'wpqv__spinner--active' );
 				}
-				$loading.removeClass( 'active' );
+				$loading.removeClass( 'wpqv__loading--visible' );
 				$dialog.removeAttr( 'aria-busy' );
 
 				if ( ! response.success ) {
@@ -139,7 +145,26 @@ jQuery( document ).ready( function( $ ) {
 					return;
 				}
 
-				container.html( response.data );
+				container.html( response.data.html );
+
+				// Update static nav buttons from structured response.
+				var prevId    = response.data.prev_id;
+				var nextId    = response.data.next_id;
+				var $prevSide = $dialog.find( '.wpqv__nav-side--prev' );
+				var $nextSide = $dialog.find( '.wpqv__nav-side--next' );
+
+				if ( prevId ) {
+					$prevSide.find( '.wpqv__nav-btn--prev' ).data( 'product_id', prevId );
+					$prevSide.removeAttr( 'hidden' );
+				} else {
+					$prevSide.attr( 'hidden', '' );
+				}
+				if ( nextId ) {
+					$nextSide.find( '.wpqv__nav-btn--next' ).data( 'product_id', nextId );
+					$nextSide.removeAttr( 'hidden' );
+				} else {
+					$nextSide.attr( 'hidden', '' );
+				}
 
 				// Make the dialog visible but invisible to the eye so that
 				// flexslider can measure slide dimensions before the dialog
@@ -174,9 +199,9 @@ jQuery( document ).ready( function( $ ) {
 				}
 				currentRequest = null;
 				if ( $spinnerButton ) {
-					$spinnerButton.find( loadingSpinner ).removeClass( 'active' );
+					$spinnerButton.find( loadingSpinner ).removeClass( 'wpqv__spinner--active' );
 				}
-				$loading.removeClass( 'active' );
+				$loading.removeClass( 'wpqv__loading--visible' );
 				$dialog.removeAttr( 'aria-busy' );
 				$live.text( '' );
 			},
@@ -197,7 +222,7 @@ jQuery( document ).ready( function( $ ) {
 
 		lastTrigger = this;
 
-		$button.find( loadingSpinner ).addClass( 'active' );
+		$button.find( loadingSpinner ).addClass( 'wpqv__spinner--active' );
 		loadProduct( productId, adjacent.nextId, adjacent.prevId, $button );
 	} );
 
@@ -228,7 +253,7 @@ jQuery( document ).ready( function( $ ) {
 		var targetId = $( this ).data( 'product_id' ),
 			adjacent = getAdjacentIds( findButton( targetId ) );
 
-		$loading.addClass( 'active' );
+		$loading.addClass( 'wpqv__loading--visible' );
 		loadProduct( targetId, adjacent.nextId, adjacent.prevId, null );
 	} );
 
@@ -239,7 +264,7 @@ jQuery( document ).ready( function( $ ) {
 		var targetId = $( this ).data( 'product_id' ),
 			adjacent = getAdjacentIds( findButton( targetId ) );
 
-		$loading.addClass( 'active' );
+		$loading.addClass( 'wpqv__loading--visible' );
 		loadProduct( targetId, adjacent.nextId, adjacent.prevId, null );
 	} );
 

@@ -3,16 +3,14 @@
 // =============================================================================
 
 #wpqv-dialog {
-	// Reset browser <dialog> default border, padding, and size constraints.
+	// Reset browser <dialog> default border and padding; size is controlled below.
 	border: 0;
-	max-height: none;
-	max-width: none;
-	overflow-x: hidden;
-	overflow-y: auto;
+	overflow: hidden;
 	padding: 0;
+	position: relative;
 
 	&::backdrop {
-		background-color: rgba( 0, 0, 0, 0.85 );
+		background-color: rgba( 0, 0, 0, 0.7 );
 	}
 
 	img {
@@ -27,12 +25,13 @@
 	}
 
 	.wpqv__modal {
+		overflow-y: auto;
 		position: relative;
 	}
 
 	.wpqv__container {
 		margin: 0 auto;
-		padding: 65px 0;
+		padding: 0;
 		position: relative;
 		z-index: 2;
 	}
@@ -40,19 +39,11 @@
 	.wpqv__modal-content {
 		background-color: #fff;
 		clear: both;
-		margin-left: -15px;
-		margin-right: -15px;
 		position: relative;
 
 		* {
 			box-sizing: border-box;
 		}
-	}
-
-	.wpqv__bottom-nav {
-		clear: both;
-		padding: 0 15px 20px;
-		text-align: center;
 	}
 }
 
@@ -241,8 +232,10 @@
 	height: 34px;
 	padding: 5px;
 	position: absolute;
+	right: 12px;
+	top: 12px;
 	width: 34px;
-	z-index: 6;
+	z-index: 10;
 
 	svg {
 		display: block;
@@ -254,50 +247,37 @@
 // Navigation
 // =============================================================================
 
-#wpqv-dialog .wpqv__modal-content {
-	.wpqv__nav {
-		height: 100%;
-		position: absolute;
-		width: 100%;
-		z-index: -1;
+#wpqv-dialog .wpqv__nav-side--prev,
+#wpqv-dialog .wpqv__nav-side--next {
+	position: absolute;
+	top: 50%;
+	transform: translateY( -50% );
+	z-index: 10;
+}
 
-		.wpqv__nav-inner {
-			position: relative;
-			top: 50%;
-			transform: translateY( -50% );
+#wpqv-dialog .wpqv__nav-side--prev {
+	left: 12px;
+}
 
-			&::after {
-				clear: both;
-				content: '';
-				display: table;
-			}
-		}
+#wpqv-dialog .wpqv__nav-side--next {
+	right: 12px;
+}
 
-		.wpqv__nav-side--prev {
-			float: left;
-		}
+#wpqv-dialog .wpqv__nav-btn {
+	background-color: #fff;
+	border: 0;
+	box-shadow: -1px 1px 3px rgba( 0, 0, 0, 0.5 );
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	height: 34px;
+	position: relative;
+	width: 34px;
 
-		.wpqv__nav-side--next {
-			float: right;
-		}
-	}
-
-	.wpqv__nav-btn {
-		background-color: #fff;
-		border: 0;
-		box-shadow: -1px 1px 3px rgba( 0, 0, 0, 0.5 );
-		cursor: pointer;
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		height: 34px;
-		position: relative;
-		width: 34px;
-
-		svg {
-			display: block;
-			fill: currentColor;
-		}
+	svg {
+		display: block;
+		fill: currentColor;
 	}
 }
 
@@ -308,7 +288,7 @@
 #wpqv-dialog .wpqv__loading {
 	display: none;
 
-	&.active {
+	&--visible {
 		background-color: #fff;
 		bottom: 0;
 		display: block;
@@ -364,37 +344,16 @@
 // Responsive
 // =============================================================================
 
-@media ( min-width: 1200px ) {
-	#wpqv-dialog .wpqv__container {
-		max-width: 980px;
-	}
-
-	#wpqv-dialog .wpqv__modal-content .wpqv__nav .wpqv__nav-inner {
-		margin: 0 -50px;
-	}
-}
-
-@media ( min-width: 980px ) and ( max-width: 1199px ) {
-	#wpqv-dialog .wpqv__container {
-		width: 80%;
-	}
-
-	#wpqv-dialog .wpqv__modal-content .wpqv__nav .wpqv__nav-inner {
-		margin: 0 -50px;
-	}
-}
-
-@media ( min-width: 768px ) and ( max-width: 979px ) {
-	#wpqv-dialog .wpqv__container {
-		width: 90%;
-	}
-
-	#wpqv-dialog .wpqv__modal-content .wpqv__nav {
-		display: none;
-	}
-}
-
 @media ( min-width: 768px ) {
+	#wpqv-dialog {
+		max-height: 85vh;
+		max-width: 900px;
+	}
+
+	#wpqv-dialog .wpqv__modal {
+		max-height: 85vh;
+	}
+
 	#wpqv-dialog .wpqv__modal-content .wpqv__product > .images {
 		float: left;
 		margin: 0;
@@ -407,34 +366,26 @@
 		padding-left: 10px;
 		width: 60%;
 	}
-
-	#wpqv-dialog .wpqv__close {
-		right: -17px;
-		top: -17px;
-	}
-}
-
-@media ( min-width: 980px ) {
-	#wpqv-dialog .wpqv__bottom-nav {
-		display: none;
-	}
 }
 
 @media ( max-width: 767px ) {
-	#wpqv-dialog .wpqv__container {
-		width: 85%;
+	#wpqv-dialog {
+		height: 100dvh;
+		max-height: 100dvh;
+		max-width: 100%;
+		width: 100%;
+	}
+
+	#wpqv-dialog .wpqv__modal {
+		height: 100dvh;
+	}
+
+	#wpqv-dialog .wpqv__nav-side--prev,
+	#wpqv-dialog .wpqv__nav-side--next {
+		display: none;
 	}
 
 	#wpqv-dialog .wpqv__modal-content .wpqv__product > .images {
 		margin-bottom: 25px;
-	}
-
-	#wpqv-dialog .wpqv__modal-content .wpqv__nav {
-		display: none;
-	}
-
-	#wpqv-dialog .wpqv__close {
-		right: -10px;
-		top: -10px;
 	}
 }

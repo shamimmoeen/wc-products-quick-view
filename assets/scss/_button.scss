@@ -14,8 +14,8 @@
 		vertical-align: middle;
 	}
 
-	.wpqv__spinner--inline.active,
-	.woocommerce .products .product & .wpqv__spinner--inline.active {
+	.wpqv__spinner--inline.wpqv__spinner--active,
+	.woocommerce .products .product & .wpqv__spinner--inline.wpqv__spinner--active {
 		display: inline-block;
 	}
 
