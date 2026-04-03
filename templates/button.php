@@ -18,27 +18,15 @@
  * @var string $button_icon_position 'before' or 'after' the label text.
  * @var string $button_position      Active WC hook name or 'wpqv_overlay'.
  * @var string $product_name         Product title used to build the accessible aria-label.
+ * @var bool   $is_overlay           True when position is wpqv_overlay.
+ * @var string $element_classes      Full class string for the button element.
+ * @var string $aria_label           Accessible label for the button.
+ * @var string $icon_svg             Inline SVG markup for the selected icon, or empty string.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 global $post;
-
-$is_overlay = ( 'wpqv_overlay' === $button_position );
-
-// Build element class list.
-$element_classes = $button_class . ' button';
-if ( $is_overlay ) {
-	$element_classes .= ' wpqv__trigger--overlay';
-}
-if ( 'theme' === $button_style ) {
-	$element_classes .= ' wpqv__trigger--theme';
-}
-
-// Accessible label: "Quick View: Product Name".
-/* translators: %s: product name */
-$aria_label = sprintf( __( 'Quick View: %s', 'wc-products-quick-view' ), $product_name );
-
-// Retrieve the icon SVG (empty string when icon is 'none').
-$icon_svg = WPQV_Settings::get_icon_svg( $button_icon );
 ?>
 <?php if ( 'default' === $button_style ) : ?>
 <div class="wpqv__button-wrap">

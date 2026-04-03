@@ -5,6 +5,8 @@
  * @package WC_Products_Quick_View
  */
 
+defined( 'ABSPATH' ) || exit;
+
 if ( ! class_exists( 'WPQV_Quick_View' ) ) {
 
 	/**
@@ -135,10 +137,11 @@ if ( ! class_exists( 'WPQV_Quick_View' ) ) {
 		 * AJAX handler: load product content for the quick view modal.
 		 */
 		public function show_product() {
-
+			// phpcs:disable WordPress.Security.NonceVerification.Missing -- reads only public product data; $product->is_visible() ensures no private or draft products are exposed.
 			$product_id = isset( $_POST['product_id'] ) ? absint( $_POST['product_id'] ) : 0;
 			$next_id    = isset( $_POST['next_product_id'] ) ? absint( $_POST['next_product_id'] ) : 0;
 			$prev_id    = isset( $_POST['prev_product_id'] ) ? absint( $_POST['prev_product_id'] ) : 0;
+			// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 			if ( ! $product_id ) {
 				wp_send_json_error();

@@ -16,6 +16,8 @@
  * @var string $prev_class CSS classes for the previous navigation button element.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 // $product is used internally by the WooCommerce template functions called below.
 global $post, $product;
 ?>

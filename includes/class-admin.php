@@ -5,6 +5,8 @@
  * @package WC_Products_Quick_View
  */
 
+defined( 'ABSPATH' ) || exit;
+
 if ( ! class_exists( 'WPQV_Admin' ) ) {
 
 	/**
@@ -93,6 +95,29 @@ if ( ! class_exists( 'WPQV_Admin' ) ) {
 				. esc_html__( 'Settings', 'wc-products-quick-view' ) . '</a>';
 			array_unshift( $links, $settings_link );
 			return $links;
+		}
+
+		/**
+		 * Returns the available button position options.
+		 *
+		 * Developers can add or remove positions via the wpqv_button_positions filter.
+		 *
+		 * @return array<string, string>
+		 */
+		public static function get_position_options() {
+			$options = array(
+				'woocommerce_before_shop_loop_item_title' => __( 'Before title (after image)', 'wc-products-quick-view' ),
+				'woocommerce_after_shop_loop_item_title'  => __( 'After title', 'wc-products-quick-view' ),
+				'woocommerce_after_shop_loop_item'        => __( 'After add to cart button', 'wc-products-quick-view' ),
+				'wpqv_overlay'                            => __( 'Over product image (icon overlay)', 'wc-products-quick-view' ),
+			);
+
+			/**
+			 * Filters the available button position options.
+			 *
+			 * @param array<string, string> $options Position options keyed by hook name.
+			 */
+			return apply_filters( 'wpqv_button_positions', $options );
 		}
 
 		// ====================================================================
@@ -208,12 +233,7 @@ if ( ! class_exists( 'WPQV_Admin' ) ) {
 		 */
 		public function field_button_position() {
 			$value   = WPQV_Settings::get( 'button_position' );
-			$options = array(
-				'woocommerce_before_shop_loop_item_title' => __( 'Before title (after image)', 'wc-products-quick-view' ),
-				'woocommerce_after_shop_loop_item_title'  => __( 'After title', 'wc-products-quick-view' ),
-				'woocommerce_after_shop_loop_item'        => __( 'After add to cart button', 'wc-products-quick-view' ),
-				'wpqv_overlay'                            => __( 'Over product image (icon overlay)', 'wc-products-quick-view' ),
-			);
+			$options = self::get_position_options();
 			echo '<select name="' . esc_attr( WPQV_Settings::OPTION_KEY ) . '[button_position]" id="wpqv_button_position" class="wc-enhanced-select">';
 			foreach ( $options as $key => $label ) {
 				echo '<option value="' . esc_attr( $key ) . '"' . selected( $value, $key, false ) . '>' . esc_html( $label ) . '</option>';
@@ -361,8 +381,15 @@ if ( ! class_exists( 'WPQV_Admin' ) ) {
 		 */
 		public function save_settings() {
 			// phpcs:ignore WordPress.Security.NonceVerification.Missing
-			$input = isset( $_POST[ WPQV_Settings::OPTION_KEY ] ) ? (array) $_POST[ WPQV_Settings::OPTION_KEY ] : array();
-			update_option( WPQV_Settings::OPTION_KEY, $this->sanitize_settings( $input ) );
+			$raw   = isset( $_POST[ WPQV_Settings::OPTION_KEY ] ) ? wp_unslash( $_POST[ WPQV_Settings::OPTION_KEY ] ) : array();
+			$input = is_array( $raw ) ? $raw : array();
+			$clean = $this->sanitize_settings( $input );
+			update_option( WPQV_Settings::OPTION_KEY, $clean );
+
+			do_action( 'wpml_register_single_string', 'wc-products-quick-view', 'button_label', $clean['button_label'] );
+			if ( function_exists( 'pll_register_string' ) ) {
+				pll_register_string( 'button_label', $clean['button_label'], __( 'WPQV – Quick View for WooCommerce', 'wc-products-quick-view' ) );
+			}
 		}
 
 		// ====================================================================
@@ -379,12 +406,7 @@ if ( ! class_exists( 'WPQV_Admin' ) ) {
 			$clean    = array();
 			$defaults = WPQV_Settings::defaults();
 
-			$valid_positions = array(
-				'woocommerce_before_shop_loop_item_title',
-				'woocommerce_after_shop_loop_item_title',
-				'woocommerce_after_shop_loop_item',
-				'wpqv_overlay',
-			);
+			$valid_positions = array_keys( self::get_position_options() );
 
 			$clean['button_position'] = isset( $input['button_position'] ) && in_array( $input['button_position'], $valid_positions, true )
 				? $input['button_position']
@@ -407,6 +429,10 @@ if ( ! class_exists( 'WPQV_Admin' ) ) {
 			$clean['button_icon'] = isset( $input['button_icon'] ) && in_array( $input['button_icon'], $valid_icons, true )
 				? $input['button_icon']
 				: $defaults['button_icon'];
+
+			if ( '' === $clean['button_label'] && 'none' === $clean['button_icon'] ) {
+				$clean['button_label'] = $defaults['button_label'];
+			}
 
 			$valid_icon_positions          = array( 'before', 'after' );
 			$clean['button_icon_position'] = isset( $input['button_icon_position'] ) && in_array( $input['button_icon_position'], $valid_icon_positions, true )

@@ -34,8 +34,10 @@ function wpqv_init() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-settings.php';
 	require_once plugin_dir_path( __FILE__ ) . 'includes/functions.php';
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-quick-view.php';
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-admin.php';
+	if ( is_admin() ) {
+		require_once plugin_dir_path( __FILE__ ) . 'includes/class-admin.php';
+		WPQV_Admin::get_instance();
+	}
 
-	WPQV_Admin::get_instance();
 	WPQV_Quick_View::get_instance();
 }
