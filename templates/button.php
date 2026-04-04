@@ -10,6 +10,7 @@
  *
  * Template variables:
  *
+ * @var int    $product_id            Product ID for the data attribute.
  * @var string $button_class         Base CSS class for the trigger button element.
  * @var string $spinner_class        CSS classes for the inline loading spinner span.
  * @var string $button_label         Visible button label text.
@@ -25,8 +26,6 @@
  */
 
 defined( 'ABSPATH' ) || exit;
-
-global $post;
 ?>
 <?php if ( 'default' === $button_style ) : ?>
 <div class="wpqv__button-wrap">
@@ -35,7 +34,7 @@ global $post;
 	<button
 		type="button"
 		class="<?php echo esc_attr( $element_classes ); ?>"
-		data-product_id="<?php echo esc_attr( $post->ID ); ?>"
+		data-product_id="<?php echo esc_attr( $product_id ); ?>"
 		aria-label="<?php echo esc_attr( $aria_label ); ?>"
 	>
 		<?php if ( $icon_svg && 'before' === $button_icon_position ) : ?>

@@ -167,6 +167,7 @@ if ( ! class_exists( 'WPQV_Quick_View' ) ) {
 				wp_send_json_error();
 			}
 
+			global $product;
 			$product  = wc_get_product( $product_id );
 			$response = '';
 
@@ -174,7 +175,9 @@ if ( ! class_exists( 'WPQV_Quick_View' ) ) {
 				$post = get_post( $product_id ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 				setup_postdata( $post );
 
-				$template_args = array();
+				$template_args = array(
+					'title_tag' => 'h2',
+				);
 
 				/**
 				 * Filters the arguments passed to the product modal template.

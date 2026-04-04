@@ -34,6 +34,7 @@ if ( ! function_exists( 'wpqv_button' ) ) {
 		$args = array(
 			'button_class'         => 'wpqv__trigger',
 			'spinner_class'        => 'wpqv__spinner wpqv__spinner--inline',
+			'product_id'           => $post ? $post->ID : 0,
 			'button_label'         => WPQV_Settings::get( 'button_label' ),
 			'button_style'         => $button_style,
 			'button_icon'          => $button_icon,
