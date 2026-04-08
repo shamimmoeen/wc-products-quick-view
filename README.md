@@ -1,51 +1,67 @@
-# WC Products Quick View
-Contributors: shamimmoeen
-Tags: WooCommerce Products Quick View, Products Quick View, WooCommerce Quick View, Quick View, WooCommerce
-Requires at least: 3.0.1
-Tested up to: 4.2.3
-Stable tag: 1.0
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+# WCQV – Product Quick View for WooCommerce #
+**Contributors:** [shamimmoeen](https://profiles.wordpress.org/shamimmoeen/)  
+**Tags:** quick view, woocommerce, products, modal, ajax  
+**Requires at least:** 6.0  
+**Tested up to:** 6.9  
+**Requires PHP:** 7.4  
+**Stable tag:** 2.0.0  
+**WC requires at least:** 7.0  
+**WC tested up to:** 10.6.2  
+**License:** GPL v2 or later  
+**License URI:** https://www.gnu.org/licenses/gpl-2.0.html  
 
-A plugin to get preview of woocommerce products from product list.
+Adds a Quick View button to the WooCommerce products loop so customers can preview product details in a modal without leaving the page.
 
-## Description
+## Description ##
 
-WC Products Quick View plugin comes for giving your shop an exclusive feature. This plugin adds a "Quick View" button to the products loop. Your customers can see the products in a lightbox without leaving the page.
+WCQV – Product Quick View for WooCommerce adds a Quick View button to your shop product listings. Customers can click it to open a modal with the product details — including images, price, rating, and add-to-cart — without navigating away from the shop page.
 
 Features:
 
-* Add simple and variable product to cart with an ajax request
-* Navigate to the next and previous products
-* Fully responsive and compatible with most of the themes
+* Quick view modal for simple and variable products
+* Add to cart directly from the modal with AJAX
+* Navigate to next and previous products within the modal
+* Accessible — built with a native `<dialog>` element, full keyboard support, and screen reader announcements
+* Template overrides supported — copy templates to your theme
+* Fully responsive
 
-## Developer
+## Installation ##
 
-Are you a developer? See the F.A.Q section.
+1. Upload the plugin folder to the `/wp-content/plugins/` directory, or install it directly through the WordPress plugins screen.
+2. Activate the plugin through the **Plugins** screen in WordPress.
+3. No configuration needed — the Quick View button appears automatically on your shop and archive pages.
 
-## Installation
+## Frequently Asked Questions ##
 
-Once you have installed the plugin, you just need to activate the plugin in order to enable it.
+### Can I change the Quick View button position? ###
 
-## Frequently Asked Questions
+Yes — go to **WooCommerce > Settings > Quick View** and choose a position from the dropdown. To disable auto-placement and position the button yourself, select **None** and use the `[wcqv_button]` shortcode, or call `wcqv_button()` directly in your theme.
 
-### Can I change the "Quick View" button position? =
+### Can I customise the templates? ###
 
-Yes, you can. Paste these codes in your theme's functions.php.
-`remove_action('woocommerce_after_shop_loop_item', 'wpqv_button', 15);
-add_action('woocommerce_after_shop_loop_item', 'wpqv_button', 25);`
+Yes. Copy `button.php` or `product.php` from the plugin's `templates/` folder into `yourtheme/wc-products-quick-view/` and edit them there.
 
-### Can I customize the templates?
+### Can I add or remove sections from the modal content? ###
 
-Yes, you can. You have to copy the wpqv-button.php and wpqv-product.php templates from the templates folder of the plugin and paste it into woocommerce folder of your theme and don't forget to update the image source to load the images properly.
+Yes. The modal product content is built with WordPress action hooks. For example, to remove the product rating:
 
-## Screenshots
+`remove_action( 'wcqv_product_summary', 'woocommerce_template_loop_rating', 10 );`
 
-1. Quick View button on products loop
-2. Product Details in lightbox
+## Screenshots ##
 
-## Changelog
+1. Quick View button on the products loop
+2. Product details in the modal
+3. Plugin settings page
 
-= 1.0 =
+## Changelog ##
 
+### 2.0.0 ###
+* Rewrite: native `<dialog>` element replaces custom modal, removing jQuery dependency
+* Add prev/next product navigation inside the modal
+* Add shortcode `[wcqv_button]` for manual button placement
+* Add button icon and style settings
+* Improve accessibility: full keyboard support, screen reader announcements, body scroll lock
+* Template hooks — use `wcqv_product_gallery` and `wcqv_product_summary` actions to add, remove, or reorder modal content
+
+### 1.0 ###
 * Initial release

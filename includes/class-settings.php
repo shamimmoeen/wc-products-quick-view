@@ -7,43 +7,42 @@
 
 defined( 'ABSPATH' ) || exit;
 
-if ( ! class_exists( 'WPQV_Settings' ) ) {
+if ( ! class_exists( 'WCQV_Settings' ) ) {
 
 	/**
 	 * Static settings helper.
 	 *
-	 * All settings are stored under the single option key 'wpqv_settings' as a
-	 * serialised array. Use WPQV_Settings::get() on the frontend and
-	 * WPQV_Settings::all() wherever you need the full set at once.
+	 * All settings are stored under the single option key 'wcqv_settings' as a
+	 * serialised array. Use WCQV_Settings::get() on the frontend and
+	 * WCQV_Settings::all() wherever you need the full set at once.
 	 */
-	class WPQV_Settings {
+	class WCQV_Settings {
 
 		/**
 		 * WordPress option key.
 		 *
 		 * @var string
 		 */
-		const OPTION_KEY = 'wpqv_settings';
+		const OPTION_KEY = 'wcqv_settings';
 
 		/**
 		 * Returns the default values for every setting.
 		 *
-		 * Developers can adjust defaults via the wpqv_settings_defaults filter.
+		 * Developers can adjust defaults via the wcqv_settings_defaults filter.
 		 *
 		 * @return array<string, mixed>
 		 */
 		public static function defaults() {
 			$defaults = array(
 				// Button.
-				'button_position'      => 'woocommerce_after_shop_loop_item',
+				'button_position'      => 'auto',
 				'button_priority'      => 15,
 				'button_label'         => 'Quick View',
-				'button_style'         => 'default',
+				'button_style'         => 'theme',
 				'button_icon'          => 'none',
 				'button_icon_position' => 'before',
-				// Gallery.
-				'enable_slider'        => 1,
-				'enable_magnify'       => 0,
+				// Modal.
+				'enable_view_product' => 1,
 			);
 
 			/**
@@ -51,7 +50,7 @@ if ( ! class_exists( 'WPQV_Settings' ) ) {
 			 *
 			 * @param array<string, mixed> $defaults Default setting values.
 			 */
-			return apply_filters( 'wpqv_settings_defaults', $defaults );
+			return apply_filters( 'wcqv_settings_defaults', $defaults );
 		}
 
 		/**
@@ -90,17 +89,18 @@ if ( ! class_exists( 'WPQV_Settings' ) ) {
 					'label' => __( 'None', 'wc-products-quick-view' ),
 					'svg'   => '',
 				),
+				// Heroicons v2 Outline (MIT). https://heroicons.com
 				'eye'    => array(
 					'label' => __( 'Eye', 'wc-products-quick-view' ),
-					'svg'   => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>',
+					'svg'   => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2.03555 12.3224C1.96647 12.1151 1.9664 11.8907 2.03536 11.6834C3.42372 7.50972 7.36079 4.5 12.0008 4.5C16.6387 4.5 20.5742 7.50692 21.9643 11.6776C22.0334 11.8849 22.0335 12.1093 21.9645 12.3166C20.5761 16.4903 16.6391 19.5 11.9991 19.5C7.36119 19.5 3.42564 16.4931 2.03555 12.3224Z"/><path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z"/></svg>',
 				),
 				'search' => array(
 					'label' => __( 'Search / Magnify', 'wc-products-quick-view' ),
-					'svg'   => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>',
+					'svg'   => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 21L15.8033 15.8033M15.8033 15.8033C17.1605 14.4461 18 12.5711 18 10.5C18 6.35786 14.6421 3 10.5 3C6.35786 3 3 6.35786 3 10.5C3 14.6421 6.35786 18 10.5 18C12.5711 18 14.4461 17.1605 15.8033 15.8033Z"/></svg>',
 				),
 				'zoom'   => array(
 					'label' => __( 'Zoom in', 'wc-products-quick-view' ),
-					'svg'   => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14zm2.5-4h-2v2H9v-2H7V9h2V7h1v2h2v1z"/></svg>',
+					'svg'   => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 21L15.8033 15.8033M15.8033 15.8033C17.1605 14.4461 18 12.5711 18 10.5C18 6.35786 14.6421 3 10.5 3C6.35786 3 3 6.35786 3 10.5C3 14.6421 6.35786 18 10.5 18C12.5711 18 14.4461 17.1605 15.8033 15.8033ZM10.5 7.5V13.5M13.5 10.5H7.5"/></svg>',
 				),
 			);
 
@@ -109,7 +109,7 @@ if ( ! class_exists( 'WPQV_Settings' ) ) {
 			 *
 			 * @param array<string, array{label: string, svg: string}> $icons Icon options keyed by icon slug.
 			 */
-			return apply_filters( 'wpqv_icon_options', $icons );
+			return apply_filters( 'wcqv_icon_options', $icons );
 		}
 
 		/**

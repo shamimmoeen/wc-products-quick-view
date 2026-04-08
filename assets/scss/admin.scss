@@ -1,14 +1,10 @@
 /*!
- * WPQV – Quick View for WooCommerce
+ * WCQV – Product Quick View for WooCommerce
  * Admin styles
  */
 
-// =============================================================================
-// Admin Settings Page
-// =============================================================================
-
-.woocommerce_page_wc-settings-wpqv {
-	.wpqv-admin-icon-option {
+.woocommerce_page_wc-settings {
+	.wcqv-admin-icon-option {
 		svg {
 			vertical-align: middle;
 		}
