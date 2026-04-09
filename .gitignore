@@ -7,4 +7,6 @@ vendor/
 *.tar.gz
 *.zip
 assets/css/*.map
+assets/css/*.css
 assets/js/*.map
+assets/js/*.min.js
