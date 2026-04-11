@@ -46,10 +46,12 @@ document.addEventListener( 'DOMContentLoaded', function() {
 		if ( scrollbarWidth > 0 ) {
 			document.body.style.paddingRight = scrollbarWidth + 'px';
 		}
+		document.documentElement.style.overflow = 'hidden';
 		document.body.style.overflow = 'hidden';
 	}
 
 	function unlockBodyScroll() {
+		document.documentElement.style.overflow = '';
 		document.body.style.overflow = '';
 		document.body.style.paddingRight = '';
 	}
@@ -105,20 +107,6 @@ document.addEventListener( 'DOMContentLoaded', function() {
 		if ( label && btn.dataset.originalLabel ) {
 			label.textContent = btn.dataset.originalLabel;
 		}
-	}
-
-	// -------------------------------------------------------------------------
-	// Product gallery setup
-	// Handles click prevention for gallery image anchors.
-	// Custom gallery thumbnail behaviour will also be wired up here.
-	// -------------------------------------------------------------------------
-
-	function setupProductGallery( context ) {
-		context.querySelectorAll( '.woocommerce-product-gallery__image a' ).forEach( function( a ) {
-			a.addEventListener( 'click', function( e ) {
-				e.preventDefault();
-			} );
-		} );
 	}
 
 	// -------------------------------------------------------------------------
@@ -212,7 +200,6 @@ document.addEventListener( 'DOMContentLoaded', function() {
 				dialog.dispatchEvent( new CustomEvent( 'wcqv:open', { bubbles: true } ) );
 			}
 
-			setupProductGallery( content );
 			initVariationForm( content );
 
 			announceStatus( wcqv_params.i18n.loaded + ': ' + title );

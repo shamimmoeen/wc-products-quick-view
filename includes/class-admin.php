@@ -204,6 +204,30 @@ if ( ! class_exists( 'WCQV_Admin' ) ) {
 							<?php $this->field_enable_view_product(); ?>
 						</td>
 					</tr>
+					<tr>
+						<th scope="row" class="titledesc">
+							<label for="wcqv_dialog_width"><?php esc_html_e( 'Dialog width', 'wc-products-quick-view' ); ?></label>
+						</th>
+						<td class="forminp forminp-number">
+							<?php $this->field_dialog_width(); ?>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row" class="titledesc">
+							<label for="wcqv_dialog_max_height"><?php esc_html_e( 'Dialog max-height', 'wc-products-quick-view' ); ?></label>
+						</th>
+						<td class="forminp forminp-number">
+							<?php $this->field_dialog_max_height(); ?>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row" class="titledesc">
+							<label for="wcqv_gallery_column_width"><?php esc_html_e( 'Gallery column width', 'wc-products-quick-view' ); ?></label>
+						</th>
+						<td class="forminp forminp-number">
+							<?php $this->field_gallery_column_width(); ?>
+						</td>
+					</tr>
 				</tbody>
 			</table>
 			<?php
@@ -340,6 +364,45 @@ if ( ! class_exists( 'WCQV_Admin' ) ) {
 			echo '</fieldset>';
 		}
 
+		/**
+		 * Renders the dialog width number field.
+		 */
+		public function field_dialog_width() {
+			$value = absint( WCQV_Settings::get( 'dialog_width' ) );
+			echo '<input type="number" style="width: 80px;" min="600" max="1600" step="10"
+				name="' . esc_attr( WCQV_Settings::OPTION_KEY ) . '[dialog_width]"
+				id="wcqv_dialog_width"
+				value="' . esc_attr( $value ) . '"
+				class="small-text">';
+			echo '<p class="description">' . esc_html__( 'Maximum width of the modal dialog in pixels. Default: 1050.', 'wc-products-quick-view' ) . '</p>';
+		}
+
+		/**
+		 * Renders the dialog max-height number field.
+		 */
+		public function field_dialog_max_height() {
+			$value = absint( WCQV_Settings::get( 'dialog_max_height' ) );
+			echo '<input type="number" style="width: 70px;" min="50" max="100" step="5"
+				name="' . esc_attr( WCQV_Settings::OPTION_KEY ) . '[dialog_max_height]"
+				id="wcqv_dialog_max_height"
+				value="' . esc_attr( $value ) . '"
+				class="small-text">';
+			echo '<p class="description">' . esc_html__( 'Maximum height of the dialog as a percentage of the viewport height. Default: 85.', 'wc-products-quick-view' ) . '</p>';
+		}
+
+		/**
+		 * Renders the gallery column width number field.
+		 */
+		public function field_gallery_column_width() {
+			$value = absint( WCQV_Settings::get( 'gallery_column_width' ) );
+			echo '<input type="number" style="width: 70px;" min="20" max="80" step="5"
+				name="' . esc_attr( WCQV_Settings::OPTION_KEY ) . '[gallery_column_width]"
+				id="wcqv_gallery_column_width"
+				value="' . esc_attr( $value ) . '"
+				class="small-text">';
+			echo '<p class="description">' . esc_html__( 'Width of the gallery column as a percentage of the dialog. The product info column takes the remainder. Default: 50.', 'wc-products-quick-view' ) . '</p>';
+		}
+
 		// ====================================================================
 		// Save handler
 		// ====================================================================
@@ -411,6 +474,18 @@ if ( ! class_exists( 'WCQV_Admin' ) ) {
 				: $defaults['button_icon_position'];
 
 			$clean['enable_view_product'] = ! empty( $input['enable_view_product'] ) ? 1 : 0;
+
+			$clean['dialog_width'] = isset( $input['dialog_width'] )
+				? min( 1600, max( 600, absint( $input['dialog_width'] ) ) )
+				: $defaults['dialog_width'];
+
+			$clean['dialog_max_height'] = isset( $input['dialog_max_height'] )
+				? min( 100, max( 50, absint( $input['dialog_max_height'] ) ) )
+				: $defaults['dialog_max_height'];
+
+			$clean['gallery_column_width'] = isset( $input['gallery_column_width'] )
+				? min( 80, max( 20, absint( $input['gallery_column_width'] ) ) )
+				: $defaults['gallery_column_width'];
 
 			return $clean;
 		}

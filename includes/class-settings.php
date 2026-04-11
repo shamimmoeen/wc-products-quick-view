@@ -42,7 +42,10 @@ if ( ! class_exists( 'WCQV_Settings' ) ) {
 				'button_icon'          => 'none',
 				'button_icon_position' => 'before',
 				// Modal.
-				'enable_view_product' => 1,
+				'enable_view_product'  => 1,
+				'dialog_width'         => 1050,
+				'dialog_max_height'    => 85,
+				'gallery_column_width' => 50,
 			);
 
 			/**

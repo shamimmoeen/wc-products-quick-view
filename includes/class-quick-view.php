@@ -58,6 +58,22 @@ if ( ! class_exists( 'WCQV_Quick_View' ) ) {
 				filemtime( WCQV_PATH . $style_file )
 			);
 
+			$dialog_width         = absint( WCQV_Settings::get( 'dialog_width' ) );
+			$dialog_max_height    = absint( WCQV_Settings::get( 'dialog_max_height' ) );
+			$gallery_column_width = absint( WCQV_Settings::get( 'gallery_column_width' ) );
+			$brief_column_width   = 100 - $gallery_column_width;
+
+			wp_add_inline_style(
+				'wcqv',
+				sprintf(
+					'#wcqv-dialog { --wcqv-dialog-width: %dpx; --wcqv-dialog-max-height: %dvh; --wcqv-gallery-columns: %dfr; --wcqv-brief-columns: %dfr; }',
+					$dialog_width,
+					$dialog_max_height,
+					$gallery_column_width,
+					$brief_column_width
+				)
+			);
+
 			wp_enqueue_script( 'wc-single-product' );
 			wp_enqueue_script( 'wc-add-to-cart-variation' );
 
@@ -77,11 +93,11 @@ if ( ! class_exists( 'WCQV_Quick_View' ) ) {
 					'i18n'     => apply_filters(
 						'wcqv_i18n',
 						array(
-							'loading'       => __( 'Loading product, please wait.', 'wc-products-quick-view' ),
-							'loading_btn'   => __( 'Loading…', 'wc-products-quick-view' ),
-							'error_loading' => __( 'Could not load the product. Please try again.', 'wc-products-quick-view' ),
-							'loaded'          => __( 'Quick view loaded', 'wc-products-quick-view' ),
-							'close'           => __( 'Close quick view', 'wc-products-quick-view' ),
+							'loading'           => __( 'Loading product, please wait.', 'wc-products-quick-view' ),
+							'loading_btn'       => __( 'Loading…', 'wc-products-quick-view' ),
+							'error_loading'     => __( 'Could not load the product. Please try again.', 'wc-products-quick-view' ),
+							'loaded'            => __( 'Quick view loaded', 'wc-products-quick-view' ),
+							'close'             => __( 'Close quick view', 'wc-products-quick-view' ),
 						)
 					),
 				)
