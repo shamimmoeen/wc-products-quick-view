@@ -109,6 +109,63 @@ document.addEventListener( 'DOMContentLoaded', function() {
 	}
 
 	// -------------------------------------------------------------------------
+	// Gallery
+	// -------------------------------------------------------------------------
+
+	function initGallery( context ) {
+		const stage = context.querySelector( '.wcqv__gallery-stage' );
+		if ( ! stage ) {
+			return;
+		}
+
+		const items   = Array.from( stage.querySelectorAll( '.wcqv__gallery-item' ) );
+		const dots    = Array.from( stage.querySelectorAll( '.wcqv__dot' ) );
+		const prevBtn = stage.querySelector( '.wcqv__gallery-nav--prev' );
+		const nextBtn = stage.querySelector( '.wcqv__gallery-nav--next' );
+
+		if ( items.length <= 1 ) {
+			return;
+		}
+
+		let current = 0;
+
+		function goTo( index ) {
+			items[ current ].classList.remove( 'is-active' );
+			items[ current ].setAttribute( 'aria-hidden', 'true' );
+			dots[ current ].classList.remove( 'is-active' );
+			dots[ current ].removeAttribute( 'aria-current' );
+
+			current = index;
+
+			items[ current ].classList.add( 'is-active' );
+			items[ current ].setAttribute( 'aria-hidden', 'false' );
+			dots[ current ].classList.add( 'is-active' );
+			dots[ current ].setAttribute( 'aria-current', 'true' );
+
+			prevBtn.disabled = current === 0;
+			nextBtn.disabled = current === items.length - 1;
+		}
+
+		prevBtn.addEventListener( 'click', function() {
+			if ( current > 0 ) {
+				goTo( current - 1 );
+			}
+		} );
+
+		nextBtn.addEventListener( 'click', function() {
+			if ( current < items.length - 1 ) {
+				goTo( current + 1 );
+			}
+		} );
+
+		dots.forEach( function( dot, i ) {
+			dot.addEventListener( 'click', function() {
+				goTo( i );
+			} );
+		} );
+	}
+
+	// -------------------------------------------------------------------------
 	// Variation form
 	// -------------------------------------------------------------------------
 
@@ -197,6 +254,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
 			}
 
 			initVariationForm( content );
+			initGallery( content );
 
 			announceStatus( wcqv_params.i18n.loaded + ': ' + title );
 

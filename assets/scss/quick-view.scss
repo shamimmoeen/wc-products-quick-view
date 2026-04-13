@@ -127,6 +127,11 @@ button.wcqv__trigger.wcqv__trigger--plugin {
 	--wcqv-dialog-btn-color:    var( --wcqv-text );
 	--wcqv-dialog-btn-radius:   999px;
 
+	// Product layout — overridden via inline style from gallery_column_width setting.
+	--wcqv-gallery-columns: 50fr;
+	--wcqv-brief-columns:   50fr;
+	--wcqv-column-gap:      32px;
+
 	width: var( --wcqv-dialog-width );
 	padding: 0;
 	border: 0;
@@ -163,6 +168,7 @@ button.wcqv__trigger.wcqv__trigger--plugin {
 	color: var( --wcqv-dialog-btn-color );
 	cursor: pointer;
 	transition: background 0.15s ease;
+	box-shadow: 0 2px 8px rgba( 0, 0, 0, 0.06 );
 
 	&:hover,
 	&:focus,
@@ -187,59 +193,124 @@ button.wcqv__trigger.wcqv__trigger--plugin {
 }
 
 // =============================================================================
-// Gallery — WooCommerce product images inside the quick view modal
+// Gallery — custom product image gallery inside the quick view modal
 // =============================================================================
 
-// Hide the PhotoSwipe trigger icon — no nested lightbox inside the modal.
-#wcqv-dialog .woocommerce-product-gallery__trigger {
-	display: none;
-}
-
-// WooCommerce sets style="opacity:0" inline as an anti-FOUC guard; single-product.js
-// sets it back to 1 after gallery JS init. Override here — we intentionally skip
-// wc_product_gallery() initialization inside the modal.
-// position:relative is required for the overlay arrow buttons.
-/* stylelint-disable declaration-no-important */
-#wcqv-dialog .woocommerce-product-gallery {
+// Gallery stage — image area only. Kept separate from .wcqv__gallery so that
+// overflow:hidden and border-radius do not clip the sale flash badge above it.
+#wcqv-dialog .wcqv__gallery-stage {
 	position: relative;
-	margin: 0 0 14px;
-	float: unset;
-	width: unset;
-	opacity: 1 !important;
+	border-radius: var( --wcqv-image-radius );
+	overflow: hidden;
+	background: #f9fafb;
 }
-/* stylelint-enable declaration-no-important */
 
-// Only the first gallery item is the visible main image. Additional items remain
-// in the DOM as data sources for setupProductGallery in quick-view.js.
-#wcqv-dialog .woocommerce-product-gallery__image {
-	display: none;
+// Stacked image items container — establishes the 1:1 aspect ratio.
+#wcqv-dialog .wcqv__gallery-items {
+	position: relative;
+	aspect-ratio: 1 / 1;
+}
 
-	&:first-child {
+// Each item is stacked absolutely; inactive ones fade out.
+#wcqv-dialog .wcqv__gallery-item {
+	position: absolute;
+	inset: 0;
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	transition: opacity 0.25s ease, visibility 0.25s ease;
+
+	&.is-active {
+		opacity: 1;
+		visibility: visible;
+		pointer-events: auto;
+	}
+
+	img {
 		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
 	}
 }
 
-// No lightbox — prevent all gallery anchors from navigating.
-#wcqv-dialog .woocommerce-product-gallery__image a {
-	pointer-events: none;
+// Overlay nav buttons — no border, semi-transparent bg, subtle shadow.
+// 40px (vs v6's 36px) since there are no competing product nav buttons.
+#wcqv-dialog .wcqv__gallery-nav {
+	position: absolute;
+	top: 50%;
+	transform: translateY( -50% );
+	z-index: 2;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	padding: 0;
+	border: none;
+	border-radius: 999px;
+	background: rgba( 255, 255, 255, 0.85 );
+	color: var( --wcqv-text );
+	cursor: pointer;
+	transition: background 0.2s ease;
+
+	&--prev { left: 10px; }
+	&--next { right: 10px; }
+
+	&:hover:not( :disabled ) {
+		background: rgba( 255, 255, 255, 1 );
+	}
+
+	&:disabled {
+		cursor: not-allowed;
+		opacity: 0.5;
+	}
+
+	svg {
+		display: block;
+		fill: none;
+		stroke: currentColor;
+		width: 16px;
+		height: 16px;
+	}
 }
 
-// border-radius + overflow:hidden on the first image's <a> so the img is clipped
-// to rounded corners. The <a>'s own focus outline sits outside its border-box and
-// is never clipped by its own overflow — so the accessibility issue is avoided.
-#wcqv-dialog .woocommerce-product-gallery__image:first-child a {
-	display: block;
-	border-radius: var( --wcqv-image-radius );
-	overflow: hidden;
-	background: #f9fafb; // placeholder visible while image loads.
+// Dots — overlaid at image bottom inside a dark semi-transparent pill.
+#wcqv-dialog .wcqv__dots {
+	position: absolute;
+	bottom: 14px;
+	left: 50%;
+	transform: translateX( -50% );
+	z-index: 3;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	align-items: center;
+	justify-content: center;
+	padding: 6px 12px;
+	border-radius: 999px;
+	background: rgba( 0, 0, 0, 0.3 );
 }
 
-// Main image — square crop at full column width.
-#wcqv-dialog .woocommerce-product-gallery__image:first-child img {
-	display: block;
-	width: 100%;
-	aspect-ratio: 1 / 1;
-	object-fit: cover;
+#wcqv-dialog .wcqv__dot {
+	width: 10px;
+	height: 10px;
+	padding: 0;
+	border: none;
+	border-radius: 999px;
+	background: #fff;
+	opacity: 0.5;
+	cursor: pointer;
+	transition: opacity 0.2s ease;
+
+	&.is-active {
+		opacity: 1;
+	}
+
+	&:focus-visible {
+		outline: 2px solid #fff;
+		outline-offset: 2px;
+	}
 }
 
 // =============================================================================
@@ -251,6 +322,11 @@ button.wcqv__trigger.wcqv__trigger--plugin {
 // =============================================================================
 
 #wcqv-dialog .wcqv__product {
+	display: grid;
+	grid-template-columns: var( --wcqv-gallery-columns ) var( --wcqv-brief-columns );
+	gap: var( --wcqv-column-gap );
+	align-items: start;
+
 	// .single-product div.product sets overflow:hidden, which clips the thumbnail
 	// active outline that extends outside the element. Reset to visible.
 	overflow: visible;
@@ -299,10 +375,28 @@ button.wcqv__trigger.wcqv__trigger--plugin {
 @media ( max-width: 640px ) {
 	#wcqv-dialog {
 		width: calc( 100vw - 16px );
+		max-height: calc( 100dvh - 32px );
 	}
 
 	#wcqv-dialog .wcqv__close {
 		top: 10px;
 		margin: 10px 10px 0 0;
+	}
+
+	// Stack gallery above content; reduce horizontal padding for narrow screens.
+	#wcqv-dialog .wcqv__product {
+		grid-template-columns: 1fr;
+	}
+
+	#wcqv-dialog .wcqv__content {
+		padding: 54px 20px 20px;
+	}
+}
+
+// Shrink gallery nav on very small screens — keep visible since there is no swipe support.
+@media ( max-width: 480px ) {
+	#wcqv-dialog .wcqv__gallery-nav {
+		width: 32px;
+		height: 32px;
 	}
 }
