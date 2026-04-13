@@ -89,8 +89,9 @@ if ( ! class_exists( 'WCQV_Quick_View' ) ) {
 				'wcqv',
 				'wcqv_params',
 				array(
-					'ajax_url' => admin_url( 'admin-ajax.php' ),
-					'i18n'     => apply_filters(
+					'ajax_url'    => admin_url( 'admin-ajax.php' ),
+					'scroll_lock' => (bool) WCQV_Settings::get( 'scroll_lock' ),
+					'i18n'        => apply_filters(
 						'wcqv_i18n',
 						array(
 							'loading_btn'       => __( 'Loading…', 'wc-products-quick-view' ),

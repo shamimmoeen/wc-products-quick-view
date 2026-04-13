@@ -9,6 +9,7 @@
 /**
  * @typedef {Object} WcqvParams
  * @property {string}   ajax_url
+ * @property {boolean}  scroll_lock
  * @property {WcqvI18n} i18n
  */
 
@@ -128,7 +129,9 @@ document.addEventListener( 'DOMContentLoaded', function() {
 		}
 
 		dialog.close();
-		unlockBodyScroll();
+		if ( wcqv_params.scroll_lock ) {
+			unlockBodyScroll();
+		}
 
 		dialogTitle.textContent = defaultDialogTitle;
 		pageAlert.textContent   = '';
@@ -185,7 +188,9 @@ document.addEventListener( 'DOMContentLoaded', function() {
 			dialogTitle.textContent = title;
 
 			if ( ! dialog.open ) {
-				lockBodyScroll();
+				if ( wcqv_params.scroll_lock ) {
+					lockBodyScroll();
+				}
 				dialog.showModal();
 				dialog.focus();
 				dialog.dispatchEvent( new CustomEvent( 'wcqv:open', { bubbles: true } ) );

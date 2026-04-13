@@ -198,6 +198,14 @@ if ( ! class_exists( 'WCQV_Admin' ) ) {
 				<tbody>
 					<tr>
 						<th scope="row" class="titledesc">
+							<?php esc_html_e( 'Body scroll lock', 'wc-products-quick-view' ); ?>
+						</th>
+						<td class="forminp forminp-checkbox">
+							<?php $this->field_scroll_lock(); ?>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row" class="titledesc">
 							<?php esc_html_e( 'View product link', 'wc-products-quick-view' ); ?>
 						</th>
 						<td class="forminp forminp-checkbox">
@@ -348,6 +356,23 @@ if ( ! class_exists( 'WCQV_Admin' ) ) {
 		}
 
 		/**
+		 * Renders the body scroll lock checkbox.
+		 */
+		public function field_scroll_lock() {
+			$value = WCQV_Settings::get( 'scroll_lock' );
+			echo '<fieldset>';
+			echo '<legend class="screen-reader-text"><span>' . esc_html__( 'Body scroll lock', 'wc-products-quick-view' ) . '</span></legend>';
+			echo '<label for="wcqv_scroll_lock">';
+			echo '<input type="checkbox"
+				name="' . esc_attr( WCQV_Settings::OPTION_KEY ) . '[scroll_lock]"
+				id="wcqv_scroll_lock"
+				value="1"' . checked( 1, $value, false ) . '>';
+			echo ' ' . esc_html__( 'Prevent page scrolling while the modal is open', 'wc-products-quick-view' );
+			echo '</label>';
+			echo '</fieldset>';
+		}
+
+		/**
 		 * Renders the enable view product link checkbox.
 		 */
 		public function field_enable_view_product() {
@@ -472,6 +497,8 @@ if ( ! class_exists( 'WCQV_Admin' ) ) {
 			$clean['button_icon_position'] = isset( $input['button_icon_position'] ) && in_array( $input['button_icon_position'], $valid_icon_positions, true )
 				? $input['button_icon_position']
 				: $defaults['button_icon_position'];
+
+			$clean['scroll_lock']         = ! empty( $input['scroll_lock'] ) ? 1 : 0;
 
 			$clean['enable_view_product'] = ! empty( $input['enable_view_product'] ) ? 1 : 0;
 
