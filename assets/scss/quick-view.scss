@@ -133,30 +133,18 @@ button.wcqv__trigger.wcqv__trigger--plugin {
 	--wcqv-loading-spinner-track: #d1d5db;
 	--wcqv-loading-spinner-head:  #111827;
 
-	width: min( calc( 100vw - 32px ), var( --wcqv-dialog-width ) );
-	max-width: var( --wcqv-dialog-width );
+	width: var( --wcqv-dialog-width );
 	padding: 0;
 	border: 0;
 	border-radius: var( --wcqv-radius );
-	background: transparent;
-	box-shadow: none;
+	background: var( --wcqv-bg );
+	box-shadow: var( --wcqv-shadow );
 	color: var( --wcqv-text );
+	max-height: var( --wcqv-dialog-max-height );
 
 	&::backdrop {
 		background: var( --wcqv-overlay );
 	}
-}
-
-// =============================================================================
-// Panel — the visible white card
-// =============================================================================
-
-#wcqv-dialog .wcqv__panel {
-	position: relative;
-	background: var( --wcqv-bg );
-	border-radius: var( --wcqv-radius );
-	box-shadow: var( --wcqv-shadow );
-	overflow: hidden;
 }
 
 // =============================================================================
@@ -191,45 +179,6 @@ button.wcqv__trigger.wcqv__trigger--plugin {
 	svg {
 		display: block;
 		fill: currentColor;
-	}
-}
-
-// =============================================================================
-// Body — holds the loading overlay and the product content
-// =============================================================================
-
-#wcqv-dialog .wcqv__body {
-	position: relative;
-	flex: 1;
-	min-height: 560px;
-	overflow-y: auto;
-	max-height: var( --wcqv-dialog-max-height );
-
-	// Thin scrollbar at the panel's right edge, auto-hides on hover — Webkit.
-	&::-webkit-scrollbar {
-		width: 5px;
-	}
-
-	&::-webkit-scrollbar-track {
-		background: transparent;
-	}
-
-	&::-webkit-scrollbar-thumb {
-		background: transparent;
-		border-radius: 999px;
-		transition: background 0.25s ease;
-	}
-
-	&:hover::-webkit-scrollbar-thumb {
-		background: var( --wcqv-border );
-	}
-
-	// Firefox.
-	scrollbar-width: thin;
-	scrollbar-color: transparent transparent;
-
-	&:hover {
-		scrollbar-color: var( --wcqv-border ) transparent;
 	}
 }
 
