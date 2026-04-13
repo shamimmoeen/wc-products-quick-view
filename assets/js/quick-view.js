@@ -1,6 +1,5 @@
 /**
  * @typedef {Object} WcqvI18n
- * @property {string} loading
  * @property {string} loading_btn
  * @property {string} error_loading
  * @property {string} loaded
@@ -28,7 +27,6 @@ document.addEventListener( 'DOMContentLoaded', function() {
 
 	const dialog             = document.getElementById( 'wcqv-dialog' );
 	const content            = document.getElementById( 'wcqv-content' );
-	const loading            = dialog.querySelector( '.wcqv__loading' );
 	const liveRegion         = document.getElementById( 'wcqv-live' );
 	const dialogTitle        = document.getElementById( 'wcqv-dialog-title' );
 	const defaultDialogTitle = dialogTitle ? dialogTitle.textContent.trim() : '';
@@ -137,10 +135,6 @@ document.addEventListener( 'DOMContentLoaded', function() {
 		liveRegion.textContent  = '';
 		content.innerHTML       = '';
 
-		content.setAttribute( 'aria-busy', 'false' );
-		loading.classList.remove( 'is-active' );
-		loading.setAttribute( 'aria-hidden', 'true' );
-
 		dialog.dispatchEvent( new CustomEvent( 'wcqv:close', { bubbles: true } ) );
 
 		if ( lastTrigger ) {
@@ -173,9 +167,6 @@ document.addEventListener( 'DOMContentLoaded', function() {
 		} )
 		.then( function( /** @type {{ success: boolean, data: WcqvProductData }} */ response ) {
 			controller = null;
-			content.setAttribute( 'aria-busy', 'false' );
-			loading.classList.remove( 'is-active' );
-			loading.setAttribute( 'aria-hidden', 'true' );
 
 			if ( ! response.success ) {
 				content.innerHTML = '<div class="woocommerce-error" role="alert">' + wcqv_params.i18n.error_loading + '</div>';
@@ -218,9 +209,6 @@ document.addEventListener( 'DOMContentLoaded', function() {
 				return;
 			}
 			controller = null;
-			content.setAttribute( 'aria-busy', 'false' );
-			loading.classList.remove( 'is-active' );
-			loading.setAttribute( 'aria-hidden', 'true' );
 			content.innerHTML = '<div class="woocommerce-error" role="alert">' + wcqv_params.i18n.error_loading + '</div>';
 			announceError( wcqv_params.i18n.error_loading );
 			if ( lastTrigger ) {

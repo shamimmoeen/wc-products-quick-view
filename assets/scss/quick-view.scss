@@ -117,8 +117,6 @@ button.wcqv__trigger.wcqv__trigger--plugin {
 	--wcqv-overlay:           rgba( 17, 24, 39, 0.55 );
 	--wcqv-radius:            16px;
 	--wcqv-shadow:            0 20px 50px rgba( 0, 0, 0, 0.18 );
-	--wcqv-loading-overlay:   rgba( 255, 255, 255, 0.8 );
-	--wcqv-loading-shadow:    0 10px 24px rgba( 0, 0, 0, 0.08 );
 	--wcqv-dialog-width:      1050px;
 	--wcqv-dialog-max-height: 85vh;
 	--wcqv-image-radius:      12px;
@@ -128,10 +126,6 @@ button.wcqv__trigger.wcqv__trigger--plugin {
 	--wcqv-dialog-btn-bg-hover: #fff;
 	--wcqv-dialog-btn-color:    var( --wcqv-text );
 	--wcqv-dialog-btn-radius:   999px;
-
-	// Loading overlay spinner.
-	--wcqv-loading-spinner-track: #d1d5db;
-	--wcqv-loading-spinner-head:  #111827;
 
 	width: var( --wcqv-dialog-width );
 	padding: 0;
@@ -152,11 +146,12 @@ button.wcqv__trigger.wcqv__trigger--plugin {
 // =============================================================================
 
 #wcqv-dialog .wcqv__close {
-	position: absolute;
+	position: sticky;
 	top: 14px;
-	right: 14px;
+	float: right;
+	margin: 14px 14px 0 0;
 	z-index: 20;
-	display: inline-flex;
+	display: flex;
 	align-items: center;
 	justify-content: center;
 	width: 44px;
@@ -182,52 +177,6 @@ button.wcqv__trigger.wcqv__trigger--plugin {
 	}
 }
 
-// Block pointer events on the content area while an AJAX load is in progress.
-// Prevents rapid nav-button clicks from selecting text in the content below.
-#wcqv-dialog .wcqv__content[aria-busy="true"] {
-	pointer-events: none;
-}
-
-// =============================================================================
-// Loading overlay
-// =============================================================================
-
-#wcqv-dialog .wcqv__loading {
-	position: absolute;
-	inset: 0;
-	z-index: 10;
-	display: none;
-	align-items: center;
-	justify-content: center;
-	background: var( --wcqv-loading-overlay );
-	backdrop-filter: blur( 2px );
-
-	&.is-active {
-		display: flex;
-	}
-}
-
-#wcqv-dialog .wcqv__loading-inner {
-	display: flex;
-	align-items: center;
-	gap: 12px;
-	padding: 12px 20px;
-	border: 1px solid var( --wcqv-border );
-	border-radius: 999px;
-	background: #fff;
-	box-shadow: var( --wcqv-loading-shadow );
-}
-
-#wcqv-dialog .wcqv__spinner {
-	width: 22px;
-	height: 22px;
-	border: 3px solid var( --wcqv-loading-spinner-track );
-	border-top-color: var( --wcqv-loading-spinner-head );
-	border-radius: 50%;
-	animation: wcqv-spin 0.7s linear infinite;
-}
-
-// =============================================================================
 // =============================================================================
 // Content area — shared padding wrapper for the product template
 // =============================================================================

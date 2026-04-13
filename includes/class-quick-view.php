@@ -93,7 +93,6 @@ if ( ! class_exists( 'WCQV_Quick_View' ) ) {
 					'i18n'     => apply_filters(
 						'wcqv_i18n',
 						array(
-							'loading'           => __( 'Loading product, please wait.', 'wc-products-quick-view' ),
 							'loading_btn'       => __( 'Loading…', 'wc-products-quick-view' ),
 							'error_loading'     => __( 'Could not load the product. Please try again.', 'wc-products-quick-view' ),
 							'loaded'            => __( 'Quick view loaded', 'wc-products-quick-view' ),
@@ -141,14 +140,7 @@ if ( ! class_exists( 'WCQV_Quick_View' ) ) {
 
 					<div class="wcqv__body">
 
-						<div class="wcqv__loading" aria-hidden="true">
-							<div class="wcqv__loading-inner">
-								<span class="wcqv__spinner" aria-hidden="true"></span>
-								<span><?php esc_html_e( 'Loading product…', 'wc-products-quick-view' ); ?></span>
-							</div>
-						</div>
-
-						<div id="wcqv-content" class="<?php echo esc_attr( implode( ' ', wcqv_get_classes( 'content' ) ) ); ?>" aria-busy="false"></div>
+						<div id="wcqv-content" class="<?php echo esc_attr( implode( ' ', wcqv_get_classes( 'content' ) ) ); ?>"></div>
 
 					</div>
 
