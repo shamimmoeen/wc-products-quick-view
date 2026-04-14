@@ -111,39 +111,59 @@ button.wcqv__trigger.wcqv__trigger--plugin {
 
 // CSS custom properties scoped to the dialog so they don't pollute :root.
 #wcqv-dialog {
-	--wcqv-bg:                #ffffff;
-	--wcqv-text:              #1f2937;
-	--wcqv-border:            #e5e7eb;
-	--wcqv-overlay:           rgba( 17, 24, 39, 0.55 );
-	--wcqv-radius:            16px;
-	--wcqv-shadow:            0 20px 50px rgba( 0, 0, 0, 0.18 );
-	--wcqv-dialog-width:      1050px;
-	--wcqv-dialog-max-height: 85vh;
-	--wcqv-image-radius:      12px;
-
-	// Dialog UI buttons (close button).
+	--wcqv-bg:                  #ffffff;
+	--wcqv-text:                #1f2937;
+	--wcqv-border:              #e5e7eb;
+	--wcqv-overlay:             rgba( 17, 24, 39, 0.55 );
+	--wcqv-radius:              16px;
+	--wcqv-shadow:              0 20px 50px rgba( 0, 0, 0, 0.18 );
+	--wcqv-dialog-width:        1050px;
+	--wcqv-dialog-height:       510px;
+	--wcqv-gallery-columns:     50fr;
+	--wcqv-brief-columns:       50fr;
+	--wcqv-column-gap:          32px;
+	--wcqv-gallery-object-fit:  contain;
+	--wcqv-content-spacing:     48px;
+	--wcqv-brief-padding:       var( --wcqv-content-spacing ) var( --wcqv-content-spacing ) var( --wcqv-content-spacing ) 0;
 	--wcqv-dialog-btn-bg:       rgba( 255, 255, 255, 0.96 );
 	--wcqv-dialog-btn-bg-hover: #fff;
 	--wcqv-dialog-btn-color:    var( --wcqv-text );
 	--wcqv-dialog-btn-radius:   999px;
+}
 
-	// Product layout — overridden via inline style from gallery_column_width setting.
-	--wcqv-gallery-columns: 50fr;
-	--wcqv-brief-columns:   50fr;
-	--wcqv-column-gap:      32px;
-
-	width: var( --wcqv-dialog-width );
+#wcqv-dialog {
+	width: min( var( --wcqv-dialog-width ), calc( 100vw - 32px ) );
+	height: var( --wcqv-dialog-height );
+	max-height: calc( 100dvh - 32px );
 	padding: 0;
 	border: 0;
-	border-radius: var( --wcqv-radius );
 	background: var( --wcqv-bg );
+	border-radius: var( --wcqv-radius );
 	box-shadow: var( --wcqv-shadow );
 	color: var( --wcqv-text );
-	max-height: var( --wcqv-dialog-max-height );
+	overflow: hidden;
 
 	&::backdrop {
 		background: var( --wcqv-overlay );
 	}
+}
+
+#wcqv-dialog .wcqv__panel {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+#wcqv-dialog .wcqv__body {
+	flex: 1 1 auto;
+	min-height: 0;
+	overflow: hidden;
+}
+
+#wcqv-dialog .wcqv__content {
+	height: 100%;
+	box-sizing: border-box;
 }
 
 // =============================================================================
@@ -151,10 +171,10 @@ button.wcqv__trigger.wcqv__trigger--plugin {
 // =============================================================================
 
 #wcqv-dialog .wcqv__close {
-	position: sticky;
+	position: absolute;
 	top: 14px;
-	float: right;
-	margin: 14px 14px 0 0;
+	right: 14px;
+	margin: 0;
 	z-index: 20;
 	display: flex;
 	align-items: center;
@@ -184,37 +204,32 @@ button.wcqv__trigger.wcqv__trigger--plugin {
 }
 
 // =============================================================================
-// Content area — shared padding wrapper for the product template
-// =============================================================================
-
-// 56px top clears the close button (top:14px, height:44px → bottom at 58px).
-#wcqv-dialog .wcqv__content {
-	padding: 56px 56px 40px;
-}
-
-// =============================================================================
 // Gallery — custom product image gallery inside the quick view modal
 // =============================================================================
+#wcqv-dialog .wcqv__gallery {
+	position: relative;
+	min-width: 0;
+	min-height: 0;
+	overflow: hidden;
+}
 
-// Gallery stage — image area only. Kept separate from .wcqv__gallery so that
-// overflow:hidden and border-radius do not clip the sale flash badge above it.
 #wcqv-dialog .wcqv__gallery-stage {
 	position: relative;
-	border-radius: var( --wcqv-image-radius );
+	height: 100%;
 	overflow: hidden;
 	background: #f9fafb;
 }
 
-// Stacked image items container — establishes the 1:1 aspect ratio.
+// Grid stacking — all items share the same cell so they overlap for crossfade.
 #wcqv-dialog .wcqv__gallery-items {
-	position: relative;
-	aspect-ratio: 1 / 1;
+	display: grid;
+	height: 100%;
 }
 
-// Each item is stacked absolutely; inactive ones fade out.
 #wcqv-dialog .wcqv__gallery-item {
-	position: absolute;
-	inset: 0;
+	grid-row: 1;
+	grid-column: 1;
+	min-height: 0;
 	opacity: 0;
 	visibility: hidden;
 	pointer-events: none;
@@ -230,12 +245,12 @@ button.wcqv__trigger.wcqv__trigger--plugin {
 		display: block;
 		width: 100%;
 		height: 100%;
-		object-fit: cover;
+		object-fit: var( --wcqv-gallery-object-fit );
+		object-position: center;
 	}
 }
 
-// Overlay nav buttons — no border, semi-transparent bg, subtle shadow.
-// 40px (vs v6's 36px) since there are no competing product nav buttons.
+// Overlay nav buttons.
 #wcqv-dialog .wcqv__gallery-nav {
 	position: absolute;
 	top: 50%;
@@ -323,32 +338,35 @@ button.wcqv__trigger.wcqv__trigger--plugin {
 
 #wcqv-dialog .wcqv__product {
 	display: grid;
-	grid-template-columns: var( --wcqv-gallery-columns ) var( --wcqv-brief-columns );
+	grid-template-columns: minmax( 0, var( --wcqv-gallery-columns ) ) minmax( 0, var( --wcqv-brief-columns ) );
 	gap: var( --wcqv-column-gap );
-	align-items: start;
-
-	// .single-product div.product sets overflow:hidden, which clips the thumbnail
-	// active outline that extends outside the element. Reset to visible.
-	overflow: visible;
+	align-items: stretch;
+	height: 100%;
+	overflow: hidden;
 
 	a {
 		text-decoration: none;
 	}
 
-	// WooCommerce adds a float clearfix via .single-product div.product::before/after.
-	// Suppress the generated content to prevent unexpected space.
+	// Suppress WooCommerce float clearfix pseudo-elements.
 	&::before,
 	&::after {
 		display: none;
 	}
 }
 
-// Brief (summary) column — reset margin, float, and width that themes apply
-// to .summary / .entry-summary to prevent them interfering with the modal layout.
+// Reset theme styles on .summary / .entry-summary.
 #wcqv-dialog .wcqv__brief {
 	margin: 0;
 	float: unset;
 	width: unset;
+	min-width: 0;
+	min-height: 0;
+	height: 100%;
+	padding: var( --wcqv-brief-padding );
+	box-sizing: border-box;
+	overflow-y: auto;
+	overflow-x: hidden;
 }
 
 // Product title — reserve space on the right so the close button does not overlap it.
@@ -374,26 +392,36 @@ button.wcqv__trigger.wcqv__trigger--plugin {
 
 @media ( max-width: 640px ) {
 	#wcqv-dialog {
+		--wcqv-content-spacing: 20px;
+	}
+
+	#wcqv-dialog {
+		height: 100%;
 		width: calc( 100vw - 16px );
-		max-height: calc( 100dvh - 32px );
 	}
 
-	#wcqv-dialog .wcqv__close {
-		top: 10px;
-		margin: 10px 10px 0 0;
-	}
-
-	// Stack gallery above content; reduce horizontal padding for narrow screens.
 	#wcqv-dialog .wcqv__product {
 		grid-template-columns: 1fr;
+		height: auto;
+		overflow: visible;
+	}
+
+	#wcqv-dialog .wcqv__body {
+		overflow-y: auto;
 	}
 
 	#wcqv-dialog .wcqv__content {
-		padding: 54px 20px 20px;
+		height: auto;
+	}
+
+	#wcqv-dialog .wcqv__brief {
+		height: auto;
+		padding-left: var( --wcqv-content-spacing );
+		overflow: visible;
 	}
 }
 
-// Shrink gallery nav on very small screens — keep visible since there is no swipe support.
+// Shrink gallery nav on very small screens.
 @media ( max-width: 480px ) {
 	#wcqv-dialog .wcqv__gallery-nav {
 		width: 32px;

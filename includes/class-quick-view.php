@@ -59,16 +59,16 @@ if ( ! class_exists( 'WCQV_Quick_View' ) ) {
 			);
 
 			$dialog_width         = absint( WCQV_Settings::get( 'dialog_width' ) );
-			$dialog_max_height    = absint( WCQV_Settings::get( 'dialog_max_height' ) );
+			$dialog_height        = absint( WCQV_Settings::get( 'dialog_height' ) );
 			$gallery_column_width = absint( WCQV_Settings::get( 'gallery_column_width' ) );
 			$brief_column_width   = 100 - $gallery_column_width;
 
 			wp_add_inline_style(
 				'wcqv',
 				sprintf(
-					'#wcqv-dialog { --wcqv-dialog-width: %dpx; --wcqv-dialog-max-height: %dvh; --wcqv-gallery-columns: %dfr; --wcqv-brief-columns: %dfr; }',
+					'#wcqv-dialog { --wcqv-dialog-width: %dpx; --wcqv-dialog-height: %dpx; --wcqv-gallery-columns: %dfr; --wcqv-brief-columns: %dfr; }',
 					$dialog_width,
-					$dialog_max_height,
+					$dialog_height,
 					$gallery_column_width,
 					$brief_column_width
 				)

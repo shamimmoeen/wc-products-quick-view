@@ -45,7 +45,7 @@ if ( ! class_exists( 'WCQV_Settings' ) ) {
 				'scroll_lock'          => 1,
 				'enable_view_product'  => 1,
 				'dialog_width'         => 1050,
-				'dialog_max_height'    => 85,
+				'dialog_height'        => 510,
 				'gallery_column_width' => 50,
 			);
 
