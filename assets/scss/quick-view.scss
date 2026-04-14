@@ -125,10 +125,6 @@ button.wcqv__trigger.wcqv__trigger--plugin {
 	--wcqv-gallery-object-fit:  contain;
 	--wcqv-content-spacing:     48px;
 	--wcqv-brief-padding:       var( --wcqv-content-spacing ) var( --wcqv-content-spacing ) var( --wcqv-content-spacing ) 0;
-	--wcqv-dialog-btn-bg:       rgba( 255, 255, 255, 0.96 );
-	--wcqv-dialog-btn-bg-hover: #fff;
-	--wcqv-dialog-btn-color:    var( --wcqv-text );
-	--wcqv-dialog-btn-radius:   999px;
 }
 
 #wcqv-dialog {
@@ -183,18 +179,17 @@ button.wcqv__trigger.wcqv__trigger--plugin {
 	height: 44px;
 	padding: 0;
 	border: 1px solid var( --wcqv-border );
-	border-radius: var( --wcqv-dialog-btn-radius );
-	background: var( --wcqv-dialog-btn-bg );
-	color: var( --wcqv-dialog-btn-color );
+	border-radius: 999px;
+	background: #fff;
+	color: var( --wcqv-text );
 	cursor: pointer;
-	transition: background 0.15s ease;
+	transition: box-shadow 0.15s ease;
 	box-shadow: 0 2px 8px rgba( 0, 0, 0, 0.06 );
 
 	&:hover,
-	&:focus,
 	&:focus-visible {
-		background: var( --wcqv-dialog-btn-bg-hover );
-		color: var( --wcqv-dialog-btn-color );
+		color: var( --wcqv-text );
+		box-shadow: 0 2px 12px rgba( 0, 0, 0, 0.15 );
 	}
 
 	svg {
@@ -274,6 +269,7 @@ button.wcqv__trigger.wcqv__trigger--plugin {
 
 	&:hover:not( :disabled ) {
 		background: rgba( 255, 255, 255, 1 );
+		color: var( --wcqv-text );
 	}
 
 	&:disabled {
@@ -317,6 +313,10 @@ button.wcqv__trigger.wcqv__trigger--plugin {
 	opacity: 0.5;
 	cursor: pointer;
 	transition: opacity 0.2s ease;
+
+	&:hover {
+		opacity: 0.75;
+	}
 
 	&.is-active {
 		opacity: 1;
