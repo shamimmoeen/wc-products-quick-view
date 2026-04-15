@@ -468,3 +468,23 @@ button.wcqv__trigger.wcqv__trigger--plugin.loading {
 		height: 32px;
 	}
 }
+
+// =============================================================================
+// Reduced motion — disable non-essential animations and transitions
+// =============================================================================
+
+@media ( prefers-reduced-motion: reduce ) {
+	.wcqv__trigger-spinner {
+		animation-duration: 1.5s;
+	}
+
+	#wcqv-dialog .wcqv__close,
+	#wcqv-dialog .wcqv__gallery-nav,
+	#wcqv-dialog .wcqv__dot::after {
+		transition: none;
+	}
+
+	#wcqv-dialog .wcqv__gallery-item {
+		transition: none;
+	}
+}
