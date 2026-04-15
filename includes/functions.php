@@ -32,8 +32,8 @@ if ( ! function_exists( 'wcqv_button' ) ) {
 			$element_classes .= ' wp-element-button';
 		}
 
-		/* translators: %s: product name */
-		$aria_label = sprintf( __( 'Quick View: %s', 'wc-products-quick-view' ), $product_name );
+		/* translators: %s: product name (in quotes) */
+		$aria_label = sprintf( __( 'Quick View: &ldquo;%s&rdquo;', 'wc-products-quick-view' ), $product_name );
 
 		$args = array(
 			'spinner_class'        => 'wcqv__trigger-spinner',

@@ -1,9 +1,7 @@
 /**
  * @typedef {Object} WcqvI18n
- * @property {string} loading_btn
  * @property {string} error_loading
- * @property {string} loaded
- * @property {string} close
+ * @property {string} dialog_label
  */
 
 /**
@@ -26,12 +24,9 @@ document.addEventListener( 'DOMContentLoaded', function() {
 		return;
 	}
 
-	const dialog             = document.getElementById( 'wcqv-dialog' );
-	const content            = document.getElementById( 'wcqv-content' );
-	const liveRegion         = document.getElementById( 'wcqv-live' );
-	const dialogTitle        = document.getElementById( 'wcqv-dialog-title' );
-	const defaultDialogTitle = dialogTitle ? dialogTitle.textContent.trim() : '';
-	const pageAlert          = document.getElementById( 'wcqv-page-alert' );
+	const dialog    = document.getElementById( 'wcqv-dialog' );
+	const content   = document.getElementById( 'wcqv-content' );
+	const pageAlert = document.getElementById( 'wcqv-page-alert' );
 
 	let controller  = null;
 	let lastTrigger = null;
@@ -40,7 +35,15 @@ document.addEventListener( 'DOMContentLoaded', function() {
 	// Body scroll lock — preserves scrollbar space to prevent layout jump
 	// -------------------------------------------------------------------------
 
+	let previousHtmlOverflow    = '';
+	let previousBodyOverflow    = '';
+	let previousBodyPaddingRight = '';
+
 	function lockBodyScroll() {
+		previousHtmlOverflow     = document.documentElement.style.overflow;
+		previousBodyOverflow     = document.body.style.overflow;
+		previousBodyPaddingRight = document.body.style.paddingRight;
+
 		const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
 		if ( scrollbarWidth > 0 ) {
 			document.body.style.paddingRight = scrollbarWidth + 'px';
@@ -50,9 +53,9 @@ document.addEventListener( 'DOMContentLoaded', function() {
 	}
 
 	function unlockBodyScroll() {
-		document.documentElement.style.overflow = '';
-		document.body.style.overflow = '';
-		document.body.style.paddingRight = '';
+		document.documentElement.style.overflow = previousHtmlOverflow;
+		document.body.style.overflow            = previousBodyOverflow;
+		document.body.style.paddingRight        = previousBodyPaddingRight;
 	}
 
 	// -------------------------------------------------------------------------
@@ -67,13 +70,11 @@ document.addEventListener( 'DOMContentLoaded', function() {
 			return;
 		}
 		node.textContent = '';
+		node.removeAttribute( 'aria-relevant' );
 		setTimeout( function() {
 			node.textContent = message;
-		}, 20 );
-	}
-
-	function announceStatus( message ) {
-		announce( liveRegion, message );
+			node.setAttribute( 'aria-relevant', 'all' );
+		}, 100 );
 	}
 
 	function announceError( message ) {
@@ -85,27 +86,16 @@ document.addEventListener( 'DOMContentLoaded', function() {
 	// -------------------------------------------------------------------------
 
 	function setTriggerLoadingState( btn ) {
-		const label = btn.querySelector( '.wcqv__trigger-label' );
-		if ( label && ! btn.dataset.originalLabel ) {
-			btn.dataset.originalLabel = label.textContent;
-		}
-		btn.classList.add( 'is-loading' );
+		btn.classList.add( 'loading' );
 		btn.disabled = true;
-		if ( label ) {
-			label.textContent = wcqv_params.i18n.loading_btn;
-		}
 	}
 
 	function resetTriggerLoadingState( btn ) {
 		if ( ! btn ) {
 			return;
 		}
-		btn.classList.remove( 'is-loading' );
+		btn.classList.remove( 'loading' );
 		btn.disabled = false;
-		const label = btn.querySelector( '.wcqv__trigger-label' );
-		if ( label && btn.dataset.originalLabel ) {
-			label.textContent = btn.dataset.originalLabel;
-		}
 	}
 
 	// -------------------------------------------------------------------------
@@ -190,11 +180,11 @@ document.addEventListener( 'DOMContentLoaded', function() {
 			unlockBodyScroll();
 		}
 
-		dialogTitle.textContent = defaultDialogTitle;
-		pageAlert.textContent   = '';
-		liveRegion.textContent  = '';
-		content.innerHTML       = '';
+		pageAlert.textContent = '';
+		dialog.setAttribute( 'aria-label', wcqv_params.i18n.dialog_label );
+		content.innerHTML = '';
 
+		/** @event wcqv:close — Fired after the dialog is closed and content is cleared. */
 		dialog.dispatchEvent( new CustomEvent( 'wcqv:close', { bubbles: true } ) );
 
 		if ( lastTrigger ) {
@@ -229,7 +219,6 @@ document.addEventListener( 'DOMContentLoaded', function() {
 			controller = null;
 
 			if ( ! response.success ) {
-				content.innerHTML = '<div class="woocommerce-error" role="alert">' + wcqv_params.i18n.error_loading + '</div>';
 				announceError( wcqv_params.i18n.error_loading );
 				if ( lastTrigger ) {
 					resetTriggerLoadingState( lastTrigger );
@@ -240,24 +229,21 @@ document.addEventListener( 'DOMContentLoaded', function() {
 			content.innerHTML = response.data.html;
 
 			const titleEl = content.querySelector( '#wcqv-product-title' );
-			const title   = titleEl ? titleEl.textContent.trim() : '';
-
-			dialogTitle.textContent = title;
+			if ( titleEl ) {
+				dialog.setAttribute( 'aria-label', titleEl.textContent.trim() );
+			}
 
 			if ( ! dialog.open ) {
 				if ( wcqv_params.scroll_lock ) {
 					lockBodyScroll();
 				}
 				dialog.showModal();
-				dialog.focus();
-				dialog.dispatchEvent( new CustomEvent( 'wcqv:open', { bubbles: true } ) );
 			}
 
 			initVariationForm( content );
 			initGallery( content );
 
-			announceStatus( wcqv_params.i18n.loaded + ': ' + title );
-
+			/** @event wcqv:load — Fired after product content is loaded and the dialog is open. detail: { productId: number } */
 			dialog.dispatchEvent( new CustomEvent( 'wcqv:load', {
 				detail:  { productId: productId },
 				bubbles: true,
@@ -272,7 +258,6 @@ document.addEventListener( 'DOMContentLoaded', function() {
 				return;
 			}
 			controller = null;
-			content.innerHTML = '<div class="woocommerce-error" role="alert">' + wcqv_params.i18n.error_loading + '</div>';
 			announceError( wcqv_params.i18n.error_loading );
 			if ( lastTrigger ) {
 				resetTriggerLoadingState( lastTrigger );
@@ -296,6 +281,10 @@ document.addEventListener( 'DOMContentLoaded', function() {
 
 		lastTrigger = btn;
 
+		pageAlert.textContent = '';
+		pageAlert.removeAttribute( 'aria-relevant' );
+
+		/** @event wcqv:trigger — Fired when a trigger button is clicked, before the AJAX request. detail: { productId: number } */
 		dialog.dispatchEvent( new CustomEvent( 'wcqv:trigger', {
 			detail:  { productId: productId },
 			bubbles: true,

@@ -94,10 +94,8 @@ if ( ! class_exists( 'WCQV_Quick_View' ) ) {
 					'i18n'        => apply_filters(
 						'wcqv_i18n',
 						array(
-							'loading_btn'       => __( 'Loading…', 'wc-products-quick-view' ),
 							'error_loading'     => __( 'Could not load the product. Please try again.', 'wc-products-quick-view' ),
-							'loaded'            => __( 'Quick view loaded', 'wc-products-quick-view' ),
-							'close'             => __( 'Close quick view', 'wc-products-quick-view' ),
+							'dialog_label'      => __( 'Product quick view', 'wc-products-quick-view' ),
 						)
 					),
 				)
@@ -119,18 +117,7 @@ if ( ! class_exists( 'WCQV_Quick_View' ) ) {
 				aria-atomic="true"
 			></div>
 
-			<dialog id="wcqv-dialog" aria-labelledby="wcqv-dialog-title" aria-describedby="wcqv-live" tabindex="-1">
-
-				<span id="wcqv-dialog-title" class="screen-reader-text">
-					<?php esc_html_e( 'Product quick view', 'wc-products-quick-view' ); ?>
-				</span>
-
-				<div
-					id="wcqv-live"
-					class="screen-reader-text"
-					aria-live="polite"
-					aria-atomic="true"
-				></div>
+			<dialog id="wcqv-dialog" aria-label="<?php esc_attr_e( 'Product quick view', 'wc-products-quick-view' ); ?>">
 
 				<div class="wcqv__panel">
 

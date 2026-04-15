@@ -38,13 +38,6 @@
 	align-items: center;
 	justify-content: center;
 	gap: 8px;
-
-	// Icons are stroke-based (Heroicons outline). Set fill/stroke explicitly so
-	// themes cannot override either property and break the icon rendering.
-	svg {
-		fill: none;
-		stroke: currentColor;
-	}
 }
 
 // Plugin-style variant — opt-in via the button style setting.
@@ -70,8 +63,8 @@ button.wcqv__trigger.wcqv__trigger--plugin {
 	}
 }
 
-// Spinner — hidden by default, shown when .is-loading is present.
-// Uses currentColor so it matches whatever text colour the theme gives the button.
+// Spinner — hidden by default, shown when .loading is present on plugin-style buttons.
+// Uses currentColor so it matches the button text colour.
 .wcqv__trigger-spinner {
 	display: none;
 	box-sizing: border-box; // border is inside the 16px box — matches the icon size.
@@ -84,15 +77,21 @@ button.wcqv__trigger.wcqv__trigger--plugin {
 	flex-shrink: 0;
 }
 
-// While loading, swap the icon for the spinner — hide the SVG so only the
-// spinner is visible. The spinner rule above makes it display: inline-block.
-.wcqv__trigger.is-loading {
+// Plugin style loading — swap the icon for the spinner and suppress any
+// theme/WC spinner that fires on .button.loading via pseudo-elements.
+// Specificity (0,4,1) beats WC's .woocommerce-js button.button.loading (0,3,1).
+button.wcqv__trigger.wcqv__trigger--plugin.loading {
 	svg {
 		display: none;
 	}
 
 	.wcqv__trigger-spinner {
 		display: inline-block;
+	}
+
+	&::before,
+	&::after {
+		content: none;
 	}
 }
 
@@ -183,7 +182,7 @@ button.wcqv__trigger.wcqv__trigger--plugin {
 	background: #fff;
 	color: var( --wcqv-text );
 	cursor: pointer;
-	transition: box-shadow 0.15s ease;
+	transition: box-shadow 0.2s ease;
 	box-shadow: 0 2px 8px rgba( 0, 0, 0, 0.06 );
 
 	&:hover,
@@ -367,6 +366,23 @@ button.wcqv__trigger.wcqv__trigger--plugin {
 	box-sizing: border-box;
 	overflow-y: auto;
 	overflow-x: hidden;
+
+	// Thin scrollbar so it doesn't collide with the close button.
+	scrollbar-width: thin;
+	scrollbar-color: rgba( 0, 0, 0, 0.2 ) transparent;
+
+	&::-webkit-scrollbar {
+		width: 6px;
+	}
+
+	&::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background: rgba( 0, 0, 0, 0.2 );
+		border-radius: 3px;
+	}
 }
 
 // Product title — reserve space on the right so the close button does not overlap it.
