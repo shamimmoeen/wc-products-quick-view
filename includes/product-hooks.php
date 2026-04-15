@@ -112,7 +112,7 @@ function wcqv_product_gallery_output( $product ) {
 		for ( $i = 0; $i < $count; $i++ ) {
 			$is_active = 0 === $i;
 			printf(
-				'<button type="button" class="wcqv__dot%s" aria-label="%s"%s></button>',
+				'<button type="button" class="wcqv__dot%s" aria-label="%s"%s><span class="wcqv__dot-inner" aria-hidden="true"></span></button>',
 				$is_active ? ' is-active' : '',
 				/* translators: 1: current image number, 2: total image count */
 				esc_attr( sprintf( __( 'Show image %1$d of %2$d', 'wc-products-quick-view' ), $i + 1, $count ) ),

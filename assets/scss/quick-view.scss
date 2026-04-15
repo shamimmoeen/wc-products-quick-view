@@ -328,25 +328,22 @@ button.wcqv__trigger.wcqv__trigger--plugin.loading {
 	background: transparent;
 	cursor: pointer;
 
-	&::after {
-		content: '';
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate( -50%, -50% );
+	.wcqv__dot-inner {
+		display: block;
 		width: 10px;
 		height: 10px;
+		margin: auto;
 		border-radius: 999px;
 		background: #fff;
 		opacity: 0.5;
 		transition: opacity 0.2s ease;
 	}
 
-	&:hover::after {
+	&:hover .wcqv__dot-inner {
 		opacity: 0.75;
 	}
 
-	&.is-active::after {
+	&.is-active .wcqv__dot-inner {
 		opacity: 1;
 	}
 
@@ -487,7 +484,7 @@ button.wcqv__trigger.wcqv__trigger--plugin.loading {
 
 	#wcqv-dialog .wcqv__close,
 	#wcqv-dialog .wcqv__gallery-nav,
-	#wcqv-dialog .wcqv__dot::after {
+	#wcqv-dialog .wcqv__dot-inner {
 		transition: none;
 	}
 
