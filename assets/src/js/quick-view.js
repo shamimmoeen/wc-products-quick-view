@@ -7,6 +7,7 @@
 /**
  * @typedef {Object} WcqvParams
  * @property {string}   ajax_url
+ * @property {string}   nonce
  * @property {boolean}  scroll_lock
  * @property {WcqvI18n} i18n
  */
@@ -206,6 +207,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
 		const formData = new FormData();
 		formData.append( 'product_id', productId );
 		formData.append( 'action', 'wcqv_show_product' );
+		formData.append( 'nonce', wcqv_params.nonce );
 
 		fetch( wcqv_params.ajax_url, {
 			method: 'POST',

@@ -90,6 +90,7 @@ if ( ! class_exists( 'WCQV_Quick_View' ) ) {
 				'wcqv_params',
 				array(
 					'ajax_url'    => admin_url( 'admin-ajax.php' ),
+					'nonce'       => wp_create_nonce( 'wcqv_show_product' ),
 					'scroll_lock' => (bool) WCQV_Settings::get( 'scroll_lock' ),
 					'i18n'        => apply_filters(
 						'wcqv_i18n',
@@ -142,9 +143,9 @@ if ( ! class_exists( 'WCQV_Quick_View' ) ) {
 		 * AJAX handler: load product content for the quick view modal.
 		 */
 		public function show_product() {
-			// phpcs:disable WordPress.Security.NonceVerification.Missing -- reads only public product data; $product->is_visible() ensures no private or draft products are exposed.
+			check_ajax_referer( 'wcqv_show_product', 'nonce' );
+
 			$product_id = isset( $_POST['product_id'] ) ? absint( $_POST['product_id'] ) : 0;
-			// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 			if ( ! $product_id ) {
 				wp_send_json_error();
