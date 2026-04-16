@@ -9,4 +9,4 @@ vendor/
 assets/css/*.map
 assets/css/*.css
 assets/js/*.map
-assets/js/*.min.js
+assets/js/*.js

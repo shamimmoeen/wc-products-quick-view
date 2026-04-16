@@ -2,13 +2,16 @@
   "name": "wc-products-quick-view",
   "version": "2.0.0",
   "author": "Mainul Hassan",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "readme": "grunt readme",
     "css": "grunt css",
-	"js": "grunt js",
-	"build": "grunt build",
-	"watch": "grunt watch",
-	"dev": "grunt dev",
+    "js": "grunt js",
+    "build": "grunt build",
+    "watch": "grunt watch",
+    "dev": "grunt dev",
     "phpcs": "./vendor/bin/phpcs",
     "i18n": "wp i18n make-pot . languages/wc-products-quick-view.pot --exclude=node_modules,vendor",
     "plugin-zip": "wp dist-archive . ./wc-products-quick-view.zip",
@@ -16,6 +19,7 @@
   },
   "devDependencies": {
     "grunt": "^1.6.1",
+    "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-cssmin": "^5.0.0",
     "grunt-contrib-uglify": "^5.2.2",
     "grunt-contrib-watch": "^1.1.0",

@@ -27,8 +27,8 @@ module.exports = function( grunt ) {
 					sourceMap: true,
 				},
 				files: {
-					'assets/css/quick-view.css': 'assets/scss/quick-view.scss',
-					'assets/css/admin.css': 'assets/scss/admin.scss',
+					'assets/css/quick-view.css': 'assets/src/scss/quick-view.scss',
+					'assets/css/admin.css': 'assets/src/scss/admin.scss',
 				},
 			},
 			dist: {
@@ -36,8 +36,16 @@ module.exports = function( grunt ) {
 					sourceMap: false,
 				},
 				files: {
-					'assets/css/quick-view.css': 'assets/scss/quick-view.scss',
-					'assets/css/admin.css': 'assets/scss/admin.scss',
+					'assets/css/quick-view.css': 'assets/src/scss/quick-view.scss',
+					'assets/css/admin.css': 'assets/src/scss/admin.scss',
+				},
+			},
+		},
+
+		copy: {
+			js: {
+				files: {
+					'assets/js/quick-view.js': 'assets/src/js/quick-view.js',
 				},
 			},
 		},
@@ -48,7 +56,7 @@ module.exports = function( grunt ) {
 					sourceMap: false
 				},
 				files: {
-					'assets/js/quick-view.min.js': [ 'assets/js/quick-view.js' ]
+					'assets/js/quick-view.min.js': [ 'assets/src/js/quick-view.js' ]
 				}
 			}
 		},
@@ -67,12 +75,12 @@ module.exports = function( grunt ) {
 
 		watch: {
 			css: {
-				files: [ 'assets/scss/**/*.scss' ],
+				files: [ 'assets/src/scss/**/*.scss' ],
 				tasks: [ 'sass:dev', 'cssmin' ],
 			},
 			js: {
-				files: [ 'assets/js/*.js', '!assets/js/*.min.js' ],
-				tasks: [ 'uglify' ],
+				files: [ 'assets/src/js/**/*.js' ],
+				tasks: [ 'copy:js', 'uglify' ],
 			},
 		},
 
@@ -83,12 +91,13 @@ module.exports = function( grunt ) {
 	grunt.loadNpmTasks( 'grunt-contrib-watch' );
 	grunt.loadNpmTasks( 'grunt-contrib-uglify' );
 	grunt.loadNpmTasks( 'grunt-contrib-cssmin' );
+	grunt.loadNpmTasks( 'grunt-contrib-copy' );
 
 	grunt.registerTask( 'default', [ 'readme' ] );
 	grunt.registerTask( 'readme', [ 'wp_readme_to_markdown' ] );
 	grunt.registerTask( 'css', [ 'sass:dev', 'cssmin' ] );
 	grunt.registerTask( 'build', [ 'sass:dist', 'cssmin', 'js' ] );
-	grunt.registerTask( 'js', [ 'uglify' ] );
+	grunt.registerTask( 'js', [ 'copy:js', 'uglify' ] );
 	grunt.registerTask( 'dev', [ 'watch' ] );
 
 	grunt.util.linefeed = '\n';

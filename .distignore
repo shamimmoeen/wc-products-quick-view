@@ -22,6 +22,6 @@ vendor
 *.sql
 *.tar.gz
 *.zip
-assets/scss/
+assets/src/
 assets/css/*.map
 assets/js/*.map
