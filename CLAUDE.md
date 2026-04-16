@@ -1,12 +1,12 @@
-# WPQV – Quick View for WooCommerce
+# WCQV – Product Quick View for WooCommerce
 
 ## Project
 
-- **Plugin name:** WPQV – Quick View for WooCommerce
+- **Plugin name:** WCQV – Product Quick View for WooCommerce
 - **Plugin slug:** `wc-products-quick-view`
 - **Main file:** `wc-products-quick-view.php`
 - **Text domain:** `wc-products-quick-view`
-- **Constant/function prefix:** `WPQV_` / `wpqv_`
+- **Constant/function prefix:** `WCQV_` / `wcqv_`
 - **Author:** Mainul Hassan
 - **Author URI:** https://mainulhassan.com
 - **wp.org contributor:** shamimmoeen

@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:       WCQV – Product Quick View for WooCommerce
- * Description:       Adds a Quick View button to the WooCommerce products loop so customers can preview product details in a modal without leaving the page.
+ * Description:       Adds a Quick View button to WooCommerce product listings so customers can preview product details in a modal without leaving the page.
  * Version:           2.0.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
