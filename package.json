@@ -13,7 +13,7 @@
     "watch": "grunt watch",
     "dev": "grunt dev",
     "phpcs": "./vendor/bin/phpcs",
-    "i18n": "wp i18n make-pot . languages/wc-products-quick-view.pot --exclude=node_modules,vendor",
+    "i18n": "wp i18n make-pot . languages/wc-products-quick-view.pot --exclude=assets",
     "plugin-zip": "wp dist-archive . ./wc-products-quick-view.zip",
     "dist-check": "wp dist-archive . ./wc-products-quick-view.zip && unzip -l ./wc-products-quick-view.zip && rm ./wc-products-quick-view.zip"
   },

@@ -1,0 +1,229 @@
+# Copyright (C) 2026 Mainul Hassan
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: WCQV – Product Quick View for WooCommerce 2.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wc-products-quick-view\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-04-16T14:27:48+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: wc-products-quick-view\n"
+
+#. Plugin Name of the plugin
+#: wc-products-quick-view.php
+#: includes/class-admin.php:450
+#: includes/functions.php:147
+msgid "WCQV – Product Quick View for WooCommerce"
+msgstr ""
+
+#. Description of the plugin
+#: wc-products-quick-view.php
+msgid "Adds a Quick View button to WooCommerce product listings so customers can preview product details in a modal without leaving the page."
+msgstr ""
+
+#. Author of the plugin
+#: wc-products-quick-view.php
+msgid "Mainul Hassan"
+msgstr ""
+
+#. Author URI of the plugin
+#: wc-products-quick-view.php
+msgid "https://mainulhassan.com"
+msgstr ""
+
+#: includes/class-admin.php:57
+msgid "Quick View"
+msgstr ""
+
+#: includes/class-admin.php:95
+msgid "Settings"
+msgstr ""
+
+#: includes/class-admin.php:109
+msgid "Automatic"
+msgstr ""
+
+#: includes/class-admin.php:110
+msgid "Before title"
+msgstr ""
+
+#: includes/class-admin.php:111
+msgid "After title"
+msgstr ""
+
+#: includes/class-admin.php:112
+msgid "After add to cart button"
+msgstr ""
+
+#: includes/class-admin.php:113
+#: includes/class-settings.php:93
+msgid "None"
+msgstr ""
+
+#: includes/class-admin.php:136
+msgid "Button"
+msgstr ""
+
+#: includes/class-admin.php:138
+msgid "Controls the Quick View trigger button displayed on product cards."
+msgstr ""
+
+#: includes/class-admin.php:144
+msgid "Position"
+msgstr ""
+
+#: includes/class-admin.php:152
+msgid "Hook priority"
+msgstr ""
+
+#: includes/class-admin.php:160
+msgid "Button label"
+msgstr ""
+
+#: includes/class-admin.php:168
+msgid "Button style"
+msgstr ""
+
+#: includes/class-admin.php:176
+msgid "Icon"
+msgstr ""
+
+#: includes/class-admin.php:184
+msgid "Icon position"
+msgstr ""
+
+#: includes/class-admin.php:193
+msgid "Modal"
+msgstr ""
+
+#: includes/class-admin.php:195
+msgid "Controls the content and layout inside the quick view modal."
+msgstr ""
+
+#: includes/class-admin.php:201
+#: includes/class-admin.php:364
+msgid "Body scroll lock"
+msgstr ""
+
+#: includes/class-admin.php:209
+#: includes/class-admin.php:381
+msgid "View product link"
+msgstr ""
+
+#: includes/class-admin.php:217
+msgid "Modal width"
+msgstr ""
+
+#: includes/class-admin.php:225
+msgid "Modal height"
+msgstr ""
+
+#: includes/class-admin.php:233
+msgid "Gallery column width"
+msgstr ""
+
+#: includes/class-admin.php:260
+msgid "\"Automatic\" places the button after the add to cart button; for supported themes it is moved before it. \"None\" — use the <code>[wcqv_button]</code> shortcode."
+msgstr ""
+
+#: includes/class-admin.php:275
+msgid "Lower numbers run earlier; adjust to place the button among other elements at the same hook."
+msgstr ""
+
+#: includes/class-admin.php:296
+msgid "Inherit from theme"
+msgstr ""
+
+#: includes/class-admin.php:297
+msgid "Plugin style"
+msgstr ""
+
+#: includes/class-admin.php:310
+msgid "\"Plugin style\" applies a built-in dark button design. \"Inherit from theme\" lets your theme's button styles apply without interference."
+msgstr ""
+
+#: includes/class-admin.php:342
+msgid "Before label"
+msgstr ""
+
+#: includes/class-admin.php:343
+msgid "After label"
+msgstr ""
+
+#: includes/class-admin.php:370
+msgid "Prevent page scrolling while the modal is open"
+msgstr ""
+
+#: includes/class-admin.php:387
+msgid "Show a \"View product\" link inside the modal"
+msgstr ""
+
+#: includes/class-admin.php:402
+msgid "Maximum width of the modal in pixels. Default: 1050."
+msgstr ""
+
+#: includes/class-admin.php:415
+msgid "Height of the modal in pixels. Default: 510."
+msgstr ""
+
+#: includes/class-admin.php:428
+msgid "Width of the gallery column as a percentage of the modal. The product info column takes the remainder. Default: 50."
+msgstr ""
+
+#: includes/class-quick-view.php:98
+msgid "Could not load the product. Please try again."
+msgstr ""
+
+#: includes/class-quick-view.php:99
+#: includes/class-quick-view.php:121
+msgid "Product quick view"
+msgstr ""
+
+#: includes/class-quick-view.php:126
+msgid "Close quick view"
+msgstr ""
+
+#: includes/class-settings.php:98
+msgid "Eye"
+msgstr ""
+
+#: includes/class-settings.php:102
+msgid "Search / Magnify"
+msgstr ""
+
+#: includes/class-settings.php:106
+msgid "Zoom in"
+msgstr ""
+
+#. translators: %s: product name (in quotes)
+#: includes/functions.php:36
+#, php-format
+msgid "Quick View: &ldquo;%s&rdquo;"
+msgstr ""
+
+#: includes/product-hooks.php:97
+msgid "Previous image"
+msgstr ""
+
+#: includes/product-hooks.php:104
+msgid "Next image"
+msgstr ""
+
+#: includes/product-hooks.php:109
+msgid "Choose product image"
+msgstr ""
+
+#. translators: 1: current image number, 2: total image count
+#: includes/product-hooks.php:118
+#, php-format
+msgid "Show image %1$d of %2$d"
+msgstr ""
+
+#: includes/product-hooks.php:155
+msgid "View product"
+msgstr ""
