@@ -1,0 +1,494 @@
+/*!
+ * WCQV – Product Quick View for WooCommerce
+ * Frontend styles
+ */
+
+// =============================================================================
+// Trigger button
+//
+// The button carries WooCommerce's `button` class so theme styles apply
+// automatically. The base .wcqv__trigger applies only structural rules so the
+// theme design is inherited by default.
+//
+// The .wcqv__trigger--plugin modifier applies the built-in dark button style
+// when the "Plugin style" option is selected in settings.
+// =============================================================================
+
+// CSS custom properties for the plugin-style trigger button.
+// Developers can override these on :root (or any ancestor) to retheme the
+// button without touching .wcqv__trigger--plugin directly.
+:root {
+	--wcqv-trigger-bg:      #111827;
+	--wcqv-trigger-color:   #fff;
+	--wcqv-trigger-border:  #111827;
+	--wcqv-trigger-radius:  6px;
+	--wcqv-trigger-padding: 8px 14px;
+}
+
+.wcqv__button-wrap {
+	display: block;
+
+	&--centered {
+		text-align: center;
+	}
+}
+
+.wcqv__button-wrap button.wcqv__trigger {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+}
+
+// Plugin-style variant — opt-in via the button style setting.
+// Two classes + element tag gives (0,2,1) — beats typical theme selectors
+// like .woocommerce .button (0,2,0) without needing !important.
+button.wcqv__trigger.wcqv__trigger--plugin {
+	background: var( --wcqv-trigger-bg );
+	color: var( --wcqv-trigger-color );
+	border: 1px solid var( --wcqv-trigger-border );
+	border-radius: var( --wcqv-trigger-radius );
+	padding: var( --wcqv-trigger-padding );
+	cursor: pointer;
+	line-height: 1;
+
+	&:focus-visible {
+		outline: 2px solid currentColor;
+		outline-offset: 2px;
+	}
+
+	&:disabled {
+		cursor: wait;
+		opacity: 0.7;
+	}
+}
+
+// Spinner — hidden by default, shown when .loading is present on plugin-style buttons.
+// Uses currentColor so it matches the button text colour.
+.wcqv__trigger-spinner {
+	display: none;
+	box-sizing: border-box; // border is inside the 16px box — matches the icon size.
+	width: 16px;
+	height: 16px;
+	border: 2px solid currentColor;
+	border-top-color: transparent;
+	border-radius: 50%;
+	animation: wcqv-spin 0.7s linear infinite;
+	flex-shrink: 0;
+}
+
+// Plugin style loading — swap the icon for the spinner and suppress any
+// theme/WC spinner that fires on .button.loading via pseudo-elements.
+// Specificity (0,4,1) beats WC's .woocommerce-js button.button.loading (0,3,1).
+button.wcqv__trigger.wcqv__trigger--plugin.loading {
+	svg {
+		display: none;
+	}
+
+	.wcqv__trigger-spinner {
+		display: inline-block;
+	}
+
+	&::before,
+	&::after {
+		content: none;
+	}
+}
+
+@keyframes wcqv-spin {
+	to {
+		transform: rotate( 360deg );
+	}
+}
+
+// =============================================================================
+// Modal — <dialog> element
+//
+// showModal() puts the dialog in the browser's top layer with position: fixed
+// and margin: auto — giving native viewport centering without any extra CSS.
+// =============================================================================
+
+// CSS custom properties scoped to the dialog so they don't pollute :root.
+#wcqv-dialog {
+	--wcqv-bg:                  #ffffff;
+	--wcqv-text:                #1f2937;
+	--wcqv-border:              #e5e7eb;
+	--wcqv-overlay:             rgba( 17, 24, 39, 0.55 );
+	--wcqv-radius:              16px;
+	--wcqv-shadow:              0 20px 50px rgba( 0, 0, 0, 0.18 );
+	--wcqv-dialog-width:        1050px;
+	--wcqv-dialog-height:       510px;
+	--wcqv-gallery-columns:     50fr;
+	--wcqv-brief-columns:       50fr;
+	--wcqv-column-gap:          32px;
+	--wcqv-gallery-object-fit:  contain;
+	--wcqv-content-spacing:     48px;
+	--wcqv-brief-padding-block:       var( --wcqv-content-spacing );
+	--wcqv-brief-padding-inline-end:  var( --wcqv-content-spacing );
+}
+
+#wcqv-dialog {
+	width: min( var( --wcqv-dialog-width ), calc( 100vw - 32px ) );
+	height: var( --wcqv-dialog-height );
+	max-height: calc( 100dvh - 32px );
+	padding: 0;
+	border: 0;
+	background: var( --wcqv-bg );
+	border-radius: var( --wcqv-radius );
+	box-shadow: var( --wcqv-shadow );
+	color: var( --wcqv-text );
+	overflow: hidden;
+
+	&::backdrop {
+		background: var( --wcqv-overlay );
+	}
+}
+
+#wcqv-dialog .wcqv__panel {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+#wcqv-dialog .wcqv__body {
+	flex: 1 1 auto;
+	min-height: 0;
+	overflow: hidden;
+}
+
+#wcqv-dialog .wcqv__content {
+	height: 100%;
+	box-sizing: border-box;
+}
+
+// =============================================================================
+// Close button
+// =============================================================================
+
+#wcqv-dialog .wcqv__close {
+	position: absolute;
+	top: 14px;
+	inset-inline-end: 14px;
+	margin: 0;
+	z-index: 20;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	padding: 0;
+	border: 1px solid var( --wcqv-border );
+	border-radius: 999px;
+	background: #fff;
+	color: var( --wcqv-text );
+	cursor: pointer;
+	transition: box-shadow 0.2s ease;
+	box-shadow: 0 2px 8px rgba( 0, 0, 0, 0.06 );
+
+	&:hover,
+	&:focus-visible {
+		color: var( --wcqv-text );
+		box-shadow: 0 2px 12px rgba( 0, 0, 0, 0.15 );
+	}
+
+	&:focus-visible {
+		outline: 2px solid var( --wcqv-text );
+		outline-offset: 2px;
+	}
+
+	svg {
+		display: block;
+		fill: currentColor;
+	}
+}
+
+// =============================================================================
+// Gallery — custom product image gallery inside the quick view modal
+// =============================================================================
+#wcqv-dialog .wcqv__gallery {
+	position: relative;
+	min-width: 0;
+	min-height: 0;
+	overflow: hidden;
+}
+
+#wcqv-dialog .wcqv__gallery-stage {
+	position: relative;
+	height: 100%;
+	overflow: hidden;
+	background: #f9fafb;
+}
+
+// Grid stacking — all items share the same cell so they overlap for crossfade.
+#wcqv-dialog .wcqv__gallery-items {
+	display: grid;
+	height: 100%;
+}
+
+#wcqv-dialog .wcqv__gallery-item {
+	grid-row: 1;
+	grid-column: 1;
+	min-height: 0;
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	transition: opacity 0.25s ease, visibility 0.25s ease;
+
+	&.is-active {
+		opacity: 1;
+		visibility: visible;
+		pointer-events: auto;
+	}
+
+	img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: var( --wcqv-gallery-object-fit );
+		object-position: center;
+	}
+}
+
+// Overlay nav buttons.
+#wcqv-dialog .wcqv__gallery-nav {
+	position: absolute;
+	top: 50%;
+	transform: translateY( -50% );
+	z-index: 2;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	padding: 0;
+	border: none;
+	border-radius: 999px;
+	background: rgba( 255, 255, 255, 0.85 );
+	color: var( --wcqv-text );
+	cursor: pointer;
+	transition: background 0.2s ease;
+
+	&--prev { inset-inline-start: 10px; }
+	&--next { inset-inline-end: 10px; }
+
+	&:hover:not( :disabled ),
+	&:focus-visible {
+		background: rgba( 255, 255, 255, 1 );
+		color: var( --wcqv-text );
+	}
+
+	&:focus-visible {
+		outline: 2px solid var( --wcqv-text );
+		outline-offset: 2px;
+	}
+
+	&:disabled {
+		cursor: not-allowed;
+		opacity: 0.5;
+	}
+
+	svg {
+		display: block;
+		fill: none;
+		stroke: currentColor;
+		width: 16px;
+		height: 16px;
+
+		[dir="rtl"] & {
+			transform: scaleX( -1 );
+		}
+	}
+}
+
+// Dots — overlaid at image bottom inside a dark semi-transparent pill.
+#wcqv-dialog .wcqv__dots {
+	position: absolute;
+	bottom: 14px;
+	left: 50%;
+	transform: translateX( -50% );
+	z-index: 3;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 2px;
+	align-items: center;
+	justify-content: center;
+	padding: 2px 6px;
+	border-radius: 999px;
+	background: rgba( 0, 0, 0, 0.3 );
+}
+
+#wcqv-dialog .wcqv__dot {
+	position: relative;
+	width: 24px;
+	height: 24px;
+	padding: 0;
+	border: none;
+	border-radius: 999px;
+	background: transparent;
+	cursor: pointer;
+
+	.wcqv__dot-inner {
+		display: block;
+		width: 10px;
+		height: 10px;
+		margin: auto;
+		border-radius: 999px;
+		background: #fff;
+		opacity: 0.5;
+		transition: opacity 0.2s ease;
+	}
+
+	&:hover .wcqv__dot-inner {
+		opacity: 0.75;
+	}
+
+	&.is-active .wcqv__dot-inner {
+		opacity: 1;
+	}
+
+	&:focus-visible {
+		outline: 2px solid #fff;
+		outline-offset: -2px;
+	}
+}
+
+// =============================================================================
+// Product layout — two-column grid inside the quick view modal
+//
+// Only structural layout rules live here. WooCommerce-rendered elements such
+// as price, variations form, cart form, and quantity input intentionally have
+// no custom CSS — they inherit the active theme's styles.
+// =============================================================================
+
+#wcqv-dialog .wcqv__product {
+	display: grid;
+	grid-template-columns: minmax( 0, var( --wcqv-gallery-columns ) ) minmax( 0, var( --wcqv-brief-columns ) );
+	gap: var( --wcqv-column-gap );
+	align-items: stretch;
+	height: 100%;
+	overflow: hidden;
+
+	a {
+		text-decoration: none;
+	}
+
+	// Suppress WooCommerce float clearfix pseudo-elements.
+	&::before,
+	&::after {
+		display: none;
+	}
+}
+
+// Reset theme styles on .summary / .entry-summary.
+#wcqv-dialog .wcqv__brief {
+	margin: 0;
+	float: unset;
+	width: unset;
+	min-width: 0;
+	min-height: 0;
+	height: 100%;
+	padding-block: var( --wcqv-brief-padding-block );
+	padding-inline-start: 0;
+	padding-inline-end: var( --wcqv-brief-padding-inline-end );
+	box-sizing: border-box;
+	overflow-y: auto;
+	overflow-x: hidden;
+
+	// Thin scrollbar so it doesn't collide with the close button.
+	scrollbar-width: thin;
+	scrollbar-color: rgba( 0, 0, 0, 0.2 ) transparent;
+
+	&::-webkit-scrollbar {
+		width: 6px;
+	}
+
+	&::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background: rgba( 0, 0, 0, 0.2 );
+		border-radius: 3px;
+	}
+}
+
+// Product title — reserve space on the right so the close button does not overlap it.
+#wcqv-dialog .product_title {
+	padding-inline-end: 40px;
+}
+
+// Review link — hide inside the modal. The #reviews anchor either points
+// nowhere (archive pages) or scrolls the page behind the modal (single
+// product pages), so it is not useful in a quick view context.
+#wcqv-dialog .woocommerce-review-link {
+	display: none;
+}
+
+// View product link — margin-top separates it from the product meta above.
+#wcqv-dialog .wcqv__view-product-wrap {
+	margin-top: 1em;
+}
+
+// =============================================================================
+// Responsive — mobile (≤640px)
+// =============================================================================
+
+@media ( max-width: 640px ) {
+	#wcqv-dialog {
+		--wcqv-content-spacing: 20px;
+	}
+
+	#wcqv-dialog {
+		height: 100%;
+		width: calc( 100vw - 16px );
+	}
+
+	#wcqv-dialog .wcqv__product {
+		grid-template-columns: 1fr;
+		height: auto;
+		overflow: visible;
+	}
+
+	#wcqv-dialog .wcqv__body {
+		overflow-y: auto;
+	}
+
+	#wcqv-dialog .wcqv__content {
+		height: auto;
+	}
+
+	#wcqv-dialog .wcqv__brief {
+		height: auto;
+		padding-inline-start: var( --wcqv-content-spacing );
+		overflow: visible;
+	}
+}
+
+// Shrink gallery nav on very small screens.
+@media ( max-width: 480px ) {
+	#wcqv-dialog .wcqv__gallery-nav {
+		width: 32px;
+		height: 32px;
+	}
+}
+
+// =============================================================================
+// Reduced motion — disable non-essential animations and transitions
+// =============================================================================
+
+@media ( prefers-reduced-motion: reduce ) {
+	.wcqv__trigger-spinner {
+		animation-duration: 1.5s;
+	}
+
+	#wcqv-dialog .wcqv__close,
+	#wcqv-dialog .wcqv__gallery-nav,
+	#wcqv-dialog .wcqv__dot-inner {
+		transition: none;
+	}
+
+	#wcqv-dialog .wcqv__gallery-item {
+		transition: none;
+	}
+}
