@@ -1,11 +1,13 @@
 # Development and tooling files not needed in the WordPress.org distribution
 .claude
+.dist
 .distignore
 .editorconfig
 .git
 .gitattributes
 .github
 .gitignore
+.wordpress-org
 .DS_Store
 Thumbs.db
 CLAUDE.md
