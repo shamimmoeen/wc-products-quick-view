@@ -23,3 +23,4 @@ jobs:
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
           SLUG: wc-products-quick-view
+          IGNORE_OTHER_FILES: true
