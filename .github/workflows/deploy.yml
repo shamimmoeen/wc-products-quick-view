@@ -26,8 +26,17 @@ jobs:
         run: npm run build
 
       - name: Deploy to WordPress.org
+        id: deploy
         uses: 10up/action-wordpress-plugin-deploy@stable
+        with:
+          generate-zip: true
         env:
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
           SLUG: wc-products-quick-view
+
+      - name: Upload release asset
+        uses: softprops/action-gh-release@v3
+        with:
+          files: ${{ steps.deploy.outputs.zip-path }}
+          fail_on_unmatched_files: true
